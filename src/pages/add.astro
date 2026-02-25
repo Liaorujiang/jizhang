@@ -1,0 +1,362 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout>
+  <div class="max-w-2xl mx-auto bg-white rounded-lg shadow-md p-6">
+    <h1 class="text-2xl font-bold text-gray-800 mb-6">添加记账记录</h1>
+    
+    <!-- 登录提示 -->
+    <div id="login提示" class="p-4 bg-yellow-50 border border-yellow-200 rounded-md mb-6 hidden">
+      <p class="text-yellow-800">请先 <a href="/login" class="text-blue-600 hover:underline">登录</a> 后再添加记账记录</p>
+    </div>
+    
+    <form id="transaction-form" class="space-y-6">
+      <!-- 交易类型 -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">交易类型</label>
+        <div class="flex space-x-4">
+          <label class="flex items-center">
+            <input type="radio" name="type" value="income" class="h-4 w-4 text-blue-600" checked>
+            <span class="ml-2 text-green-600 font-medium">收入</span>
+          </label>
+          <label class="flex items-center">
+            <input type="radio" name="type" value="expense" class="h-4 w-4 text-blue-600">
+            <span class="ml-2 text-red-600 font-medium">支出</span>
+          </label>
+          <label class="flex items-center">
+            <input type="radio" name="type" value="transfer" class="h-4 w-4 text-blue-600">
+            <span class="ml-2 text-blue-600 font-medium">转账</span>
+          </label>
+        </div>
+      </div>
+      
+      <!-- 金额 -->
+      <div>
+        <label for="amount" class="block text-sm font-medium text-gray-700 mb-1">金额</label>
+        <div class="relative">
+          <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">¥</span>
+          <input type="number" id="amount" name="amount" step="0.01" min="0" class="w-full pl-8 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="0.00" required>
+        </div>
+      </div>
+      
+      <!-- 分类 -->
+      <div>
+        <label for="category" class="block text-sm font-medium text-gray-700 mb-1">分类</label>
+        <select id="category" name="category" class="w-full pl-3 pr-10 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" required>
+          <option value="">请选择分类</option>
+          <!-- 收入分类 -->
+          <optgroup label="收入">
+            <option value="1">工资</option>
+            <option value="2">奖金</option>
+            <option value="3">投资收益</option>
+            <option value="4">其他收入</option>
+          </optgroup>
+          <!-- 支出分类 -->
+          <optgroup label="支出">
+            <option value="5">餐饮</option>
+            <option value="9">交通</option>
+            <option value="13">购物</option>
+            <option value="16">娱乐</option>
+            <option value="19">其他支出</option>
+          </optgroup>
+          <!-- 转账分类 -->
+          <optgroup label="转账">
+            <option value="20">银行卡转账</option>
+            <option value="21">支付宝转账</option>
+            <option value="22">微信转账</option>
+          </optgroup>
+        </select>
+      </div>
+      
+      <!-- 支付方式 -->
+      <div>
+        <label for="payment" class="block text-sm font-medium text-gray-700 mb-1">支付方式</label>
+        <select id="payment" name="payment" class="w-full pl-3 pr-10 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" required>
+          <option value="">请选择支付方式</option>
+          <option value="1">现金</option>
+          <option value="2">信用卡</option>
+          <option value="3">支付宝</option>
+          <option value="4">微信</option>
+          <option value="5">银行卡</option>
+        </select>
+      </div>
+      
+      <!-- 日期和时间 -->
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label for="date" class="block text-sm font-medium text-gray-700 mb-1">日期</label>
+          <input type="date" id="date" name="date" class="w-full pl-3 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" required>
+        </div>
+        <div>
+          <label for="time" class="block text-sm font-medium text-gray-700 mb-1">时间</label>
+          <input type="time" id="time" name="time" class="w-full pl-3 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" required>
+        </div>
+      </div>
+      
+      <!-- 备注 -->
+      <div>
+        <label for="note" class="block text-sm font-medium text-gray-700 mb-1">备注</label>
+        <textarea id="note" name="note" rows="3" class="w-full pl-3 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="添加备注（可选）"></textarea>
+      </div>
+      
+      <!-- 提交按钮 -->
+      <div class="flex justify-end space-x-4">
+        <a href="/" class="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 transition-colors">
+          取消
+        </a>
+        <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors">
+          保存
+        </button>
+      </div>
+    </form>
+  </div>
+  
+  <script>
+    // 检查登录状态
+    function checkLoginStatus() {
+      const isLoggedIn = localStorage.getItem('user') !== null;
+      const login提示 = document.getElementById('login提示');
+      const form = document.getElementById('transaction-form');
+      
+      if (!isLoggedIn) {
+        login提示.classList.remove('hidden');
+        form.classList.add('hidden');
+      } else {
+        login提示.classList.add('hidden');
+        form.classList.remove('hidden');
+      }
+    }
+    
+    // 从本地存储加载分类数据（带层级缩进）
+    function loadCategories() {
+      const categories = JSON.parse(localStorage.getItem('categories') || '[]');
+      const categorySelect = document.getElementById('category');
+      
+      // 清空现有选项，保留默认选项
+      categorySelect.innerHTML = '<option value="">请选择分类</option>';
+      
+      // 按类型分组
+      const categoriesByType = {
+        income: [],
+        expense: [],
+        transfer: []
+      };
+      
+      // 分类数据
+      categories.forEach(category => {
+        if (categoriesByType[category.type]) {
+          categoriesByType[category.type].push(category);
+        }
+      });
+      
+      // 添加收入分类
+      if (categoriesByType.income.length > 0) {
+        const incomeGroup = document.createElement('optgroup');
+        incomeGroup.label = '收入';
+        // 只传递顶级分类
+        const topLevelIncomeCategories = categoriesByType.income.filter(c => c.parent_id === null);
+        addCategoryOptions(incomeGroup, topLevelIncomeCategories, categories, 0);
+        categorySelect.appendChild(incomeGroup);
+      }
+      
+      // 添加支出分类
+      if (categoriesByType.expense.length > 0) {
+        const expenseGroup = document.createElement('optgroup');
+        expenseGroup.label = '支出';
+        // 只传递顶级分类
+        const topLevelExpenseCategories = categoriesByType.expense.filter(c => c.parent_id === null);
+        addCategoryOptions(expenseGroup, topLevelExpenseCategories, categories, 0);
+        categorySelect.appendChild(expenseGroup);
+      }
+      
+      // 添加转账分类
+      if (categoriesByType.transfer.length > 0) {
+        const transferGroup = document.createElement('optgroup');
+        transferGroup.label = '转账';
+        // 只传递顶级分类
+        const topLevelTransferCategories = categoriesByType.transfer.filter(c => c.parent_id === null);
+        addCategoryOptions(transferGroup, topLevelTransferCategories, categories, 0);
+        categorySelect.appendChild(transferGroup);
+      }
+    }
+    
+    // 递归添加分类选项（带层级缩进）
+    function addCategoryOptions(group, categoryList, allCategories, level) {
+      const indent = '        '.repeat(level); // 每个层级用八个空格缩进
+      const indicator = level > 0 ? '└─ ' : ''; // 为子分类添加视觉指示器
+      
+      categoryList.forEach(category => {
+        const option = document.createElement('option');
+        option.value = category.id;
+        option.textContent = indent + indicator + category.name;
+        group.appendChild(option);
+        
+        // 递归处理子分类
+        const childCategories = allCategories.filter(c => c.parent_id === category.id);
+        if (childCategories.length > 0) {
+          addCategoryOptions(group, childCategories, allCategories, level + 1);
+        }
+      });
+    }
+    
+    // 从本地存储加载支付方式数据
+    function loadPaymentMethods() {
+      const paymentMethods = JSON.parse(localStorage.getItem('paymentMethods') || '[]');
+      const paymentSelect = document.getElementById('payment');
+      
+      // 清空现有选项，保留默认选项
+      paymentSelect.innerHTML = '<option value="">请选择支付方式</option>';
+      
+      // 添加支付方式选项
+      paymentMethods.forEach(method => {
+        const option = document.createElement('option');
+        option.value = method.id;
+        option.textContent = method.name;
+        paymentSelect.appendChild(option);
+      });
+    }
+    
+    // 初始化日期和时间
+    function initDateTime() {
+      const now = new Date();
+      const dateInput = document.getElementById('date');
+      const timeInput = document.getElementById('time');
+      
+      // 设置日期为今天
+      const dateStr = now.toISOString().split('T')[0];
+      dateInput.value = dateStr;
+      
+      // 设置时间为当前时间
+      const hours = now.getHours().toString().padStart(2, '0');
+      const minutes = now.getMinutes().toString().padStart(2, '0');
+      timeInput.value = `${hours}:${minutes}`;
+    }
+    
+    // 从URL参数中获取数据并填充表单
+    function loadFormData() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const editMode = urlParams.get('edit');
+      
+      if (editMode) {
+        // 编辑模式
+        document.querySelector('h1').textContent = '编辑记账记录';
+        
+        // 填充表单数据
+        const type = urlParams.get('type');
+        const amount = urlParams.get('amount');
+        const categoryId = urlParams.get('category_id');
+        const paymentId = urlParams.get('payment_method_id');
+        const date = urlParams.get('date');
+        const time = urlParams.get('time');
+        const note = urlParams.get('note');
+        
+        // 设置交易类型
+        document.querySelector(`input[name="type"][value="${type}"]`).checked = true;
+        
+        // 设置金额
+        document.getElementById('amount').value = amount;
+        
+        // 设置分类
+        document.getElementById('category').value = categoryId;
+        
+        // 设置支付方式
+        document.getElementById('payment').value = paymentId;
+        
+        // 设置日期和时间
+        document.getElementById('date').value = date;
+        document.getElementById('time').value = time;
+        
+        // 设置备注
+        if (note) {
+          document.getElementById('note').value = decodeURIComponent(note);
+        }
+      } else {
+        // 新建模式，检查是否有快捷记账参数
+        const quickType = urlParams.get('type');
+        const quickAmount = urlParams.get('amount');
+        const quickCategory = urlParams.get('category');
+        
+        if (quickType && quickAmount) {
+          // 设置交易类型
+          document.querySelector(`input[name="type"][value="${quickType}"]`).checked = true;
+          
+          // 设置金额
+          document.getElementById('amount').value = quickAmount;
+          
+          // 设置分类（根据名称查找ID）
+          const categoryMap = {
+            '工资': 1,
+            '奖金': 2,
+            '投资收益': 3,
+            '其他收入': 4,
+            '餐饮': 5,
+            '交通': 9,
+            '购物': 13,
+            '娱乐': 16,
+            '其他支出': 19
+          };
+          
+          if (categoryMap[quickCategory]) {
+            document.getElementById('category').value = categoryMap[quickCategory];
+          }
+        }
+      }
+    }
+    
+    // 处理表单提交
+    function handleSubmit(e) {
+      e.preventDefault();
+      
+      // 获取URL参数
+      const urlParams = new URLSearchParams(window.location.search);
+      const editMode = urlParams.get('edit');
+      const index = urlParams.get('index');
+      
+      // 获取表单数据
+      const formData = new FormData(e.target);
+      const transaction = {
+        type: formData.get('type'),
+        amount: parseFloat(formData.get('amount')),
+        category_id: parseInt(formData.get('category')),
+        payment_method_id: parseInt(formData.get('payment')),
+        date: formData.get('date'),
+        time: formData.get('time'),
+        note: formData.get('note') || '',
+        created_at: new Date().toISOString()
+      };
+      
+      // 保存到本地存储
+      let transactions = JSON.parse(localStorage.getItem('transactions') || '[]');
+      
+      if (editMode && index !== null) {
+        // 编辑模式，更新现有记录
+        transactions[parseInt(index)] = transaction;
+        localStorage.setItem('transactions', JSON.stringify(transactions));
+        alert('记账记录更新成功！');
+      } else {
+        // 新建模式，添加新记录
+        transactions.push(transaction);
+        localStorage.setItem('transactions', JSON.stringify(transactions));
+        alert('记账记录保存成功！');
+      }
+      
+      // 跳转到首页
+      window.location.href = '/';
+    }
+    
+    // 页面加载完成后执行
+    document.addEventListener('DOMContentLoaded', function() {
+      checkLoginStatus();
+      initDateTime();
+      loadCategories();
+      loadPaymentMethods();
+      loadFormData();
+      
+      const form = document.getElementById('transaction-form');
+      if (form) {
+        form.addEventListener('submit', handleSubmit);
+      }
+    });
+  </script>
+</Layout>

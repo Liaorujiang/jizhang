@@ -1,0 +1,342 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout>
+  <div class="space-y-8">
+    <!-- 月度概览 -->
+    <div class="bg-white rounded-lg shadow-md p-6">
+      <h2 class="text-xl font-bold text-gray-800 mb-4">月度概览</h2>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div class="bg-blue-50 rounded-md p-4">
+          <p class="text-sm text-gray-500">本月收入</p>
+          <p class="text-2xl font-bold text-blue-600" id="monthly-income">¥0.00</p>
+        </div>
+        <div class="bg-red-50 rounded-md p-4">
+          <p class="text-sm text-gray-500">本月支出</p>
+          <p class="text-2xl font-bold text-red-600" id="monthly-expense">¥0.00</p>
+        </div>
+        <div class="bg-green-50 rounded-md p-4">
+          <p class="text-sm text-gray-500">本月结余</p>
+          <p class="text-2xl font-bold text-green-600" id="monthly-balance">¥0.00</p>
+        </div>
+      </div>
+    </div>
+    
+    <!-- 年度概览 -->
+    <div class="bg-white rounded-lg shadow-md p-6">
+      <h2 class="text-xl font-bold text-gray-800 mb-4">年度概览</h2>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div class="bg-blue-50 rounded-md p-4">
+          <p class="text-sm text-gray-500">本年收入</p>
+          <p class="text-2xl font-bold text-blue-600" id="yearly-income">¥0.00</p>
+        </div>
+        <div class="bg-red-50 rounded-md p-4">
+          <p class="text-sm text-gray-500">本年支出</p>
+          <p class="text-2xl font-bold text-red-600" id="yearly-expense">¥0.00</p>
+        </div>
+        <div class="bg-green-50 rounded-md p-4">
+          <p class="text-sm text-gray-500">本年结余</p>
+          <p class="text-2xl font-bold text-green-600" id="yearly-balance">¥0.00</p>
+        </div>
+      </div>
+    </div>
+    
+    <!-- 最近记录 -->
+    <div class="bg-white rounded-lg shadow-md p-6">
+      <div class="flex flex-wrap justify-between items-center mb-4 gap-4">
+        <h2 class="text-xl font-bold text-gray-800">最近记录</h2>
+        <div class="flex items-center space-x-2">
+          <button id="all-records" class="px-3 py-1 bg-blue-600 text-white rounded-md text-sm font-medium">全部</button>
+          <button id="income-records" class="px-3 py-1 bg-gray-200 text-gray-700 rounded-md text-sm font-medium">收入</button>
+          <button id="expense-records" class="px-3 py-1 bg-gray-200 text-gray-700 rounded-md text-sm font-medium">支出</button>
+        </div>
+        <a href="/add" class="text-blue-600 hover:text-blue-800 font-medium">
+          + 添加记录
+        </a>
+      </div>
+      <div class="overflow-x-auto">
+        <table class="w-full">
+          <thead>
+            <tr class="border-b border-gray-200">
+              <th class="text-left py-3 px-4 font-medium text-gray-500">日期</th>
+              <th class="text-left py-3 px-4 font-medium text-gray-500">分类</th>
+              <th class="text-left py-3 px-4 font-medium text-gray-500">支付方式</th>
+              <th class="text-right py-3 px-4 font-medium text-gray-500">金额</th>
+              <th class="text-right py-3 px-4 font-medium text-gray-500">操作</th>
+            </tr>
+          </thead>
+          <tbody id="transaction-list">
+            <tr>
+              <td colspan="5" class="py-8 text-center text-gray-500">
+                暂无记账记录，<a href="/add" class="text-blue-600 hover:underline">立即添加</a>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    
+    <!-- 快捷记账 -->
+    <div class="bg-white rounded-lg shadow-md p-6">
+      <h2 class="text-xl font-bold text-gray-800 mb-4">快捷记账</h2>
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+        <button class="border border-gray-200 rounded-md p-4 hover:bg-gray-50 transition-colors" data-category="午餐" data-type="expense" data-amount="30">
+          <div class="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-2">
+            <span class="text-red-600">餐</span>
+          </div>
+          <p class="text-center text-gray-700">午餐</p>
+        </button>
+        <button class="border border-gray-200 rounded-md p-4 hover:bg-gray-50 transition-colors" data-category="交通" data-type="expense" data-amount="10">
+          <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-2">
+            <span class="text-blue-600">交</span>
+          </div>
+          <p class="text-center text-gray-700">交通</p>
+        </button>
+        <button class="border border-gray-200 rounded-md p-4 hover:bg-gray-50 transition-colors" data-category="工资" data-type="income" data-amount="5000">
+          <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-2">
+            <span class="text-green-600">工</span>
+          </div>
+          <p class="text-center text-gray-700">工资</p>
+        </button>
+        <button class="border border-gray-200 rounded-md p-4 hover:bg-gray-50 transition-colors" data-category="其他支出" data-type="expense" data-amount="50">
+          <div class="w-12 h-12 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-2">
+            <span class="text-yellow-600">其</span>
+          </div>
+          <p class="text-center text-gray-700">其他</p>
+        </button>
+      </div>
+    </div>
+  </div>
+  
+  <script>
+    // 获取分类名称映射
+    const categoryMap = {
+      1: '工资',
+      2: '奖金',
+      3: '投资收益',
+      4: '其他收入',
+      5: '餐饮',
+      9: '交通',
+      13: '购物',
+      16: '娱乐',
+      19: '其他支出',
+      20: '银行卡转账',
+      21: '支付宝转账',
+      22: '微信转账'
+    };
+    
+    // 获取支付方式名称映射
+    const paymentMap = {
+      1: '现金',
+      2: '信用卡',
+      3: '支付宝',
+      4: '微信',
+      5: '银行卡'
+    };
+    
+    // 计算月度概览
+    function calculateMonthlyOverview() {
+      const transactions = JSON.parse(localStorage.getItem('transactions') || '[]');
+      const now = new Date();
+      const currentMonth = now.getMonth() + 1;
+      const currentYear = now.getFullYear();
+      
+      let income = 0;
+      let expense = 0;
+      
+      transactions.forEach(transaction => {
+        const transactionDate = new Date(transaction.date);
+        const transactionMonth = transactionDate.getMonth() + 1;
+        const transactionYear = transactionDate.getFullYear();
+        
+        if (transactionMonth === currentMonth && transactionYear === currentYear) {
+          if (transaction.type === 'income') {
+            income += transaction.amount;
+          } else if (transaction.type === 'expense') {
+            expense += transaction.amount;
+          }
+        }
+      });
+      
+      const balance = income - expense;
+      
+      // 更新DOM
+      document.getElementById('monthly-income').textContent = `¥${income.toFixed(2)}`;
+      document.getElementById('monthly-expense').textContent = `¥${expense.toFixed(2)}`;
+      document.getElementById('monthly-balance').textContent = `¥${balance.toFixed(2)}`;
+    }
+    
+    // 计算年度概览
+    function calculateYearlyOverview() {
+      const transactions = JSON.parse(localStorage.getItem('transactions') || '[]');
+      const now = new Date();
+      const currentYear = now.getFullYear();
+      
+      let income = 0;
+      let expense = 0;
+      
+      transactions.forEach(transaction => {
+        const transactionDate = new Date(transaction.date);
+        const transactionYear = transactionDate.getFullYear();
+        
+        if (transactionYear === currentYear) {
+          if (transaction.type === 'income') {
+            income += transaction.amount;
+          } else if (transaction.type === 'expense') {
+            expense += transaction.amount;
+          }
+        }
+      });
+      
+      const balance = income - expense;
+      
+      // 更新DOM
+      document.getElementById('yearly-income').textContent = `¥${income.toFixed(2)}`;
+      document.getElementById('yearly-expense').textContent = `¥${expense.toFixed(2)}`;
+      document.getElementById('yearly-balance').textContent = `¥${balance.toFixed(2)}`;
+    }
+    
+    // 编辑记账记录
+    function editTransaction(index) {
+      const transactions = JSON.parse(localStorage.getItem('transactions') || '[]');
+      const transaction = transactions[index];
+      
+      // 跳转到添加页面并填充数据
+      window.location.href = `/add?edit=true&index=${index}&type=${transaction.type}&amount=${transaction.amount}&category_id=${transaction.category_id}&payment_method_id=${transaction.payment_method_id}&date=${transaction.date}&time=${transaction.time}&note=${encodeURIComponent(transaction.note || '')}`;
+    }
+    
+    // 当前筛选状态
+    let currentFilter = 'all';
+    
+    // 删除记账记录
+    function deleteTransaction(index) {
+      if (confirm('确定要删除这条记账记录吗？')) {
+        const transactions = JSON.parse(localStorage.getItem('transactions') || '[]');
+        transactions.splice(index, 1);
+        localStorage.setItem('transactions', JSON.stringify(transactions));
+        
+        // 重新计算月度概览、年度概览和显示最近记录
+        calculateMonthlyOverview();
+        calculateYearlyOverview();
+        displayRecentTransactions(currentFilter);
+      }
+    }
+    
+    // 处理记录筛选
+    function handleRecordFilter(filter) {
+      // 更新当前筛选状态
+      currentFilter = filter;
+      
+      // 更新按钮样式
+      document.getElementById('all-records').className = filter === 'all' ? 'px-3 py-1 bg-blue-600 text-white rounded-md text-sm font-medium' : 'px-3 py-1 bg-gray-200 text-gray-700 rounded-md text-sm font-medium';
+      document.getElementById('income-records').className = filter === 'income' ? 'px-3 py-1 bg-blue-600 text-white rounded-md text-sm font-medium' : 'px-3 py-1 bg-gray-200 text-gray-700 rounded-md text-sm font-medium';
+      document.getElementById('expense-records').className = filter === 'expense' ? 'px-3 py-1 bg-blue-600 text-white rounded-md text-sm font-medium' : 'px-3 py-1 bg-gray-200 text-gray-700 rounded-md text-sm font-medium';
+      
+      // 显示筛选后的记录
+      displayRecentTransactions(filter);
+    }
+    
+    // 显示最近记录
+    function displayRecentTransactions(filter = 'all') {
+      const transactions = JSON.parse(localStorage.getItem('transactions') || '[]');
+      const transactionList = document.getElementById('transaction-list');
+      
+      console.log('交易记录数据:', transactions);
+      console.log('筛选条件:', filter);
+      
+      // 创建带索引的交易记录数组
+      const transactionsWithIndex = transactions.map((transaction, index) => ({
+        ...transaction,
+        originalIndex: index
+      }));
+      
+      // 按日期排序，最新的在前
+      transactionsWithIndex.sort((a, b) => new Date(b.date) - new Date(a.date));
+      
+      // 根据筛选条件过滤记录
+      let filteredTransactions = transactionsWithIndex;
+      if (filter === 'income') {
+        filteredTransactions = transactionsWithIndex.filter(t => t.type === 'income');
+      } else if (filter === 'expense') {
+        filteredTransactions = transactionsWithIndex.filter(t => t.type === 'expense');
+      }
+      
+      console.log('筛选后记录:', filteredTransactions);
+      
+      // 取最近5条记录
+      const recentTransactions = filteredTransactions.slice(0, 5);
+      
+      if (recentTransactions.length === 0) {
+        transactionList.innerHTML = `
+          <tr>
+            <td colspan="5" class="py-8 text-center text-gray-500">
+              暂无${filter === 'all' ? '' : filter === 'income' ? '收入' : '支出'}记账记录，<a href="/add" class="text-blue-600 hover:underline">立即添加</a>
+            </td>
+          </tr>
+        `;
+        return;
+      }
+      
+      // 生成记录HTML
+      const html = recentTransactions.map((transaction) => {
+        const amountClass = transaction.type === 'income' ? 'text-green-600' : 'text-red-600';
+        const amountPrefix = transaction.type === 'income' ? '+' : '-';
+        const categoryName = categoryMap[transaction.category_id] || '未知分类';
+        const paymentName = paymentMap[transaction.payment_method_id] || '未知支付方式';
+        
+        console.log('显示记录:', transaction);
+        
+        return `
+          <tr class="border-b border-gray-100 hover:bg-gray-50">
+            <td class="py-3 px-4 text-gray-700">${transaction.date}</td>
+            <td class="py-3 px-4 text-gray-700">${categoryName}</td>
+            <td class="py-3 px-4 text-gray-700">${paymentName}</td>
+            <td class="py-3 px-4 text-right ${amountClass}">${amountPrefix}¥${transaction.amount.toFixed(2)}</td>
+            <td class="py-3 px-4 text-right">
+              <button class="text-blue-600 hover:text-blue-800 mr-3" onclick="editTransaction(${transaction.originalIndex})">编辑</button>
+              <button class="text-red-600 hover:text-red-800" onclick="deleteTransaction(${transaction.originalIndex})">删除</button>
+            </td>
+          </tr>
+        `;
+      }).join('');
+      
+      transactionList.innerHTML = html;
+      
+      // 暴露函数到全局作用域
+      window.editTransaction = editTransaction;
+      window.deleteTransaction = deleteTransaction;
+    }
+    
+    // 处理快捷记账
+    function handleQuickAdd(e) {
+      const button = e.target.closest('button');
+      if (!button) return;
+      
+      const category = button.dataset.category;
+      const type = button.dataset.type;
+      const amount = parseFloat(button.dataset.amount);
+      
+      // 跳转到添加页面并填充数据
+      window.location.href = `/add?type=${type}&amount=${amount}&category=${encodeURIComponent(category)}`;
+    }
+    
+    // 页面加载完成后执行
+    document.addEventListener('DOMContentLoaded', function() {
+      calculateMonthlyOverview();
+      calculateYearlyOverview();
+      displayRecentTransactions();
+      
+      // 添加筛选按钮事件监听
+      document.getElementById('all-records').addEventListener('click', () => handleRecordFilter('all'));
+      document.getElementById('income-records').addEventListener('click', () => handleRecordFilter('income'));
+      document.getElementById('expense-records').addEventListener('click', () => handleRecordFilter('expense'));
+      
+      // 添加快捷记账事件监听
+      const quickButtons = document.querySelectorAll('[data-category]');
+      quickButtons.forEach(button => {
+        button.addEventListener('click', handleQuickAdd);
+      });
+    });
+  </script>
+</Layout>

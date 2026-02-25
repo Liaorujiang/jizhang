@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>测试数据</title>
+</head>
+<body>
+  <h1>测试数据脚本</h1>
+  <p>点击按钮运行测试脚本，检查和添加测试数据</p>
+  <button onclick="runTest()">运行测试</button>
+  <div id="test-results"></div>
+
+  <script src="test-data.js"></script>
+  <script>
+    function runTest() {
+      const results = document.getElementById('test-results');
+      results.innerHTML = '<h2>测试结果</h2>';
+      
+      // 检查当前的交易记录
+      const currentTransactions = JSON.parse(localStorage.getItem('transactions') || '[]');
+      results.innerHTML += `<p>交易记录数量: ${currentTransactions.length}</p>`;
+      results.innerHTML += `<p>交易记录: ${JSON.stringify(currentTransactions)}</p>`;
+      
+      // 检查用户状态
+      const user = JSON.parse(localStorage.getItem('user') || 'null');
+      results.innerHTML += `<p>用户状态: ${JSON.stringify(user)}</p>`;
+      
+      // 检查分类数据
+      const categories = JSON.parse(localStorage.getItem('categories') || '[]');
+      results.innerHTML += `<p>分类数量: ${categories.length}</p>`;
+      
+      // 检查支付方式数据
+      const paymentMethods = JSON.parse(localStorage.getItem('paymentMethods') || '[]');
+      results.innerHTML += `<p>支付方式数量: ${paymentMethods.length}</p>`;
+      
+      results.innerHTML += '<p><strong>测试完成！请刷新首页查看交易记录。</strong></p>';
+    }
+  </script>
+</body>
+</html>

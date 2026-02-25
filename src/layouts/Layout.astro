@@ -1,0 +1,106 @@
+---
+import '../styles/global.css';
+---
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>个人记账</title>
+</head>
+<body class="bg-gray-50 min-h-screen">
+  <header class="bg-blue-600 text-white shadow-md">
+    <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+      <h1 class="text-2xl font-bold">个人记账</h1>
+      <nav>
+        <ul class="flex space-x-6">
+          <li><a href="/" class="hover:text-blue-200 transition-colors">首页</a></li>
+          <li><a href="/add" class="hover:text-blue-200 transition-colors">记账</a></li>
+          <li><a href="/reports" class="hover:text-blue-200 transition-colors">报表</a></li>
+          <li><a href="/settings" class="hover:text-blue-200 transition-colors">设置</a></li>
+          <!-- 登录状态显示 -->
+          <li id="login-state">
+            <a href="/login" class="hover:text-blue-200 transition-colors">登录</a>
+          </li>
+          <li id="register-state">
+            <a href="/register" class="hover:text-blue-200 transition-colors">注册</a>
+          </li>
+          <!-- 登录后显示 -->
+          <li id="user-state" class="hidden">
+            <div class="flex items-center space-x-4">
+              <span id="user-name" class="font-medium"></span>
+              <button id="logout-btn" class="hover:text-blue-200 transition-colors">退出</button>
+            </div>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+  
+  <script>
+    // 检查登录状态并更新导航栏
+    function updateLoginState() {
+      const user = localStorage.getItem('user');
+      const loginState = document.getElementById('login-state');
+      const registerState = document.getElementById('register-state');
+      const userState = document.getElementById('user-state');
+      const userName = document.getElementById('user-name');
+      
+      if (user) {
+        const userData = JSON.parse(user);
+        userName.textContent = userData.name;
+        loginState.classList.add('hidden');
+        registerState.classList.add('hidden');
+        userState.classList.remove('hidden');
+      } else {
+        loginState.classList.remove('hidden');
+        registerState.classList.remove('hidden');
+        userState.classList.add('hidden');
+      }
+    }
+    
+    // 处理退出登录
+    function handleLogout() {
+      localStorage.removeItem('user');
+      updateLoginState();
+      window.location.href = '/';
+    }
+    
+    // 检查登录状态并进行页面保护
+    function checkLoginStatus() {
+      const user = localStorage.getItem('user');
+      const currentPath = window.location.pathname;
+      
+      // 登录和注册页面不需要登录
+      const excludedPaths = ['/login', '/register'];
+      
+      if (!user && !excludedPaths.includes(currentPath)) {
+        // 未登录且不在排除路径，跳转到登录页面
+        window.location.href = '/login';
+      }
+    }
+    
+    // 页面加载完成后执行
+    document.addEventListener('DOMContentLoaded', function() {
+      checkLoginStatus();
+      updateLoginState();
+      
+      const logoutBtn = document.getElementById('logout-btn');
+      if (logoutBtn) {
+        logoutBtn.addEventListener('click', handleLogout);
+      }
+    });
+  </script>
+  
+  <main class="container mx-auto px-4 py-8">
+    <slot />
+  </main>
+  
+  <footer class="bg-gray-800 text-white py-6 mt-12">
+    <div class="container mx-auto px-4 text-center">
+      <p>&copy; 2026 个人记账 - 管理您的财务</p>
+    </div>
+  </footer>
+</body>
+</html>

@@ -1,0 +1,804 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout>
+  <h1 class="text-2xl font-bold text-gray-800 mb-6">设置</h1>
+  
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+    <!-- 左侧导航 -->
+    <div class="bg-white rounded-lg shadow-md p-4">
+      <nav>
+        <ul class="space-y-2">
+          <li>
+            <a href="#personal" class="block px-4 py-2 rounded-md bg-blue-50 text-blue-600 font-medium">个人信息</a>
+          </li>
+          <li>
+            <a href="#categories" class="block px-4 py-2 rounded-md hover:bg-gray-100 transition-colors">分类管理</a>
+          </li>
+          <li>
+            <a href="#payment" class="block px-4 py-2 rounded-md hover:bg-gray-100 transition-colors">支付方式管理</a>
+          </li>
+          <li>
+            <a href="#backup" class="block px-4 py-2 rounded-md hover:bg-gray-100 transition-colors">数据备份与恢复</a>
+          </li>
+          <li>
+            <a href="#about" class="block px-4 py-2 rounded-md hover:bg-gray-100 transition-colors">关于应用</a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+    
+    <!-- 右侧内容 -->
+    <div class="md:col-span-2 space-y-6">
+      <!-- 个人信息 -->
+      <div id="personal" class="bg-white rounded-lg shadow-md p-6">
+        <h2 class="text-xl font-semibold text-gray-800 mb-4">个人信息</h2>
+        <form id="personal-form" class="space-y-4">
+          <div>
+            <label for="name" class="block text-sm font-medium text-gray-700 mb-1">姓名</label>
+            <input type="text" id="name" name="name" value="张三" class="w-full pl-3 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+          </div>
+          <div>
+            <label for="email" class="block text-sm font-medium text-gray-700 mb-1">邮箱</label>
+            <input type="email" id="email" name="email" value="zhangsan@example.com" class="w-full pl-3 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+          </div>
+          <div>
+            <label for="password" class="block text-sm font-medium text-gray-700 mb-1">修改密码</label>
+            <input type="password" id="password" name="password" placeholder="输入新密码" class="w-full pl-3 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+          </div>
+          <div class="flex justify-end">
+            <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors">
+              保存修改
+            </button>
+          </div>
+        </form>
+      </div>
+      
+      <!-- 分类管理 -->
+      <div id="categories" class="bg-white rounded-lg shadow-md p-6">
+        <div class="flex justify-between items-center mb-4">
+          <h2 class="text-xl font-semibold text-gray-800">分类管理</h2>
+          <button id="add-category" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors">
+            + 添加分类
+          </button>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full">
+            <thead>
+              <tr class="border-b border-gray-200">
+                <th class="text-left py-3 px-4 font-medium text-gray-500">名称</th>
+                <th class="text-left py-3 px-4 font-medium text-gray-500">类型</th>
+                <th class="text-left py-3 px-4 font-medium text-gray-500">父分类</th>
+                <th class="text-right py-3 px-4 font-medium text-gray-500">操作</th>
+              </tr>
+            </thead>
+            <tbody id="category-list">
+              <tr class="border-b border-gray-100 hover:bg-gray-50">
+                <td class="py-3 px-4 text-gray-700">工资</td>
+                <td class="py-3 px-4 text-gray-700">收入</td>
+                <td class="py-3 px-4 text-gray-500">无</td>
+                <td class="py-3 px-4 text-right">
+                  <button class="text-blue-600 hover:text-blue-800 mr-3" onclick="editCategory(1)">编辑</button>
+                  <button class="text-red-600 hover:text-red-800" onclick="deleteCategory(1)">删除</button>
+                </td>
+              </tr>
+              <tr class="border-b border-gray-100 hover:bg-gray-50">
+                <td class="py-3 px-4 text-gray-700">餐饮</td>
+                <td class="py-3 px-4 text-gray-700">支出</td>
+                <td class="py-3 px-4 text-gray-500">无</td>
+                <td class="py-3 px-4 text-right">
+                  <button class="text-blue-600 hover:text-blue-800 mr-3" onclick="editCategory(2)">编辑</button>
+                  <button class="text-red-600 hover:text-red-800" onclick="deleteCategory(2)">删除</button>
+                </td>
+              </tr>
+              <tr class="hover:bg-gray-50">
+                <td class="py-3 px-4 text-gray-700">午餐</td>
+                <td class="py-3 px-4 text-gray-700">支出</td>
+                <td class="py-3 px-4 text-gray-500">餐饮</td>
+                <td class="py-3 px-4 text-right">
+                  <button class="text-blue-600 hover:text-blue-800 mr-3" onclick="editCategory(3)">编辑</button>
+                  <button class="text-red-600 hover:text-red-800" onclick="deleteCategory(3)">删除</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      
+      <!-- 支付方式管理 -->
+      <div id="payment" class="bg-white rounded-lg shadow-md p-6">
+        <div class="flex justify-between items-center mb-4">
+          <h2 class="text-xl font-semibold text-gray-800">支付方式管理</h2>
+          <button id="add-payment" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors">
+            + 添加支付方式
+          </button>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4" id="payment-list">
+          <div class="border border-gray-200 rounded-md p-4 flex justify-between items-center">
+            <div class="flex items-center">
+              <div class="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center mr-3">
+                <span class="text-gray-600">现</span>
+              </div>
+              <span class="text-gray-700">现金</span>
+            </div>
+            <div>
+              <button class="text-blue-600 hover:text-blue-800 mr-3" onclick="editPayment(1)">编辑</button>
+              <button class="text-red-600 hover:text-red-800" onclick="deletePayment(1)">删除</button>
+            </div>
+          </div>
+          <div class="border border-gray-200 rounded-md p-4 flex justify-between items-center">
+            <div class="flex items-center">
+              <div class="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center mr-3">
+                <span class="text-gray-600">信</span>
+              </div>
+              <span class="text-gray-700">信用卡</span>
+            </div>
+            <div>
+              <button class="text-blue-600 hover:text-blue-800 mr-3" onclick="editPayment(2)">编辑</button>
+              <button class="text-red-600 hover:text-red-800" onclick="deletePayment(2)">删除</button>
+            </div>
+          </div>
+          <div class="border border-gray-200 rounded-md p-4 flex justify-between items-center">
+            <div class="flex items-center">
+              <div class="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center mr-3">
+                <span class="text-gray-600">支</span>
+              </div>
+              <span class="text-gray-700">支付宝</span>
+            </div>
+            <div>
+              <button class="text-blue-600 hover:text-blue-800 mr-3" onclick="editPayment(3)">编辑</button>
+              <button class="text-red-600 hover:text-red-800" onclick="deletePayment(3)">删除</button>
+            </div>
+          </div>
+          <div class="border border-gray-200 rounded-md p-4 flex justify-between items-center">
+            <div class="flex items-center">
+              <div class="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center mr-3">
+                <span class="text-gray-600">微</span>
+              </div>
+              <span class="text-gray-700">微信</span>
+            </div>
+            <div>
+              <button class="text-blue-600 hover:text-blue-800 mr-3" onclick="editPayment(4)">编辑</button>
+              <button class="text-red-600 hover:text-red-800" onclick="deletePayment(4)">删除</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- 数据备份与恢复 -->
+      <div id="backup" class="bg-white rounded-lg shadow-md p-6">
+        <h2 class="text-xl font-semibold text-gray-800 mb-4">数据备份与恢复</h2>
+        <div class="space-y-4">
+          <div class="p-4 bg-yellow-50 border border-yellow-200 rounded-md">
+            <p class="text-yellow-800">定期备份您的数据，以防数据丢失。</p>
+          </div>
+          <div class="flex flex-col sm:flex-row gap-4">
+            <button id="export-data" class="flex-1 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors">
+              导出数据
+            </button>
+            <button id="import-data" class="flex-1 px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors">
+              导入数据
+            </button>
+            <button id="clear-data" class="flex-1 px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700 transition-colors">
+              清空数据
+            </button>
+          </div>
+        </div>
+      </div>
+      
+      <!-- 关于应用 -->
+      <div id="about" class="bg-white rounded-lg shadow-md p-6">
+        <h2 class="text-xl font-semibold text-gray-800 mb-4">关于应用</h2>
+        <div class="space-y-2">
+          <p class="text-gray-700">个人记账 v1.0.0</p>
+          <p class="text-gray-500">一个简单易用的个人财务管理工具</p>
+          <p class="text-gray-500 mt-4">© 2026 个人记账 - 保留所有权利</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- 分类编辑模态框 -->
+  <div id="category-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+    <div class="bg-white rounded-lg shadow-lg p-6 max-w-md w-full">
+      <h3 class="text-xl font-bold text-gray-800 mb-4">编辑分类</h3>
+      <form id="category-form" class="space-y-4">
+        <input type="hidden" id="category-id">
+        <div>
+          <label for="category-name" class="block text-sm font-medium text-gray-700 mb-1">名称</label>
+          <input type="text" id="category-name" class="w-full pl-3 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" required>
+        </div>
+        <div>
+          <label for="category-type" class="block text-sm font-medium text-gray-700 mb-1">类型</label>
+          <select id="category-type" class="w-full pl-3 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" required>
+            <option value="income">收入</option>
+            <option value="expense">支出</option>
+          </select>
+        </div>
+        <div>
+          <label for="category-parent" class="block text-sm font-medium text-gray-700 mb-1">父分类</label>
+          <select id="category-parent" class="w-full pl-3 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+            <option value="">无</option>
+          </select>
+        </div>
+        <div class="flex justify-end space-x-4">
+          <button type="button" id="cancel-category" class="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 transition-colors">
+            取消
+          </button>
+          <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors">
+            保存
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+  
+  <!-- 支付方式编辑模态框 -->
+  <div id="payment-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+    <div class="bg-white rounded-lg shadow-lg p-6 max-w-md w-full">
+      <h3 class="text-xl font-bold text-gray-800 mb-4">编辑支付方式</h3>
+      <form id="payment-form" class="space-y-4">
+        <input type="hidden" id="payment-id">
+        <div>
+          <label for="payment-name" class="block text-sm font-medium text-gray-700 mb-1">名称</label>
+          <input type="text" id="payment-name" class="w-full pl-3 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" required>
+        </div>
+        <div class="flex justify-end space-x-4">
+          <button type="button" id="cancel-payment" class="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 transition-colors">
+            取消
+          </button>
+          <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors">
+            保存
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+  
+  <script>
+    // 初始化本地存储数据
+    function initLocalStorage() {
+      // 初始化分类数据 - 只在数据不存在时初始化
+      if (!localStorage.getItem('categories')) {
+        const defaultCategories = [
+          { id: 1, name: '工资', type: 'income', parent_id: null },
+          { id: 2, name: '奖金', type: 'income', parent_id: null },
+          { id: 3, name: '投资收益', type: 'income', parent_id: null },
+          { id: 4, name: '其他收入', type: 'income', parent_id: null },
+          { id: 25, name: '生活', type: 'expense', parent_id: null },
+          { id: 26, name: '吃', type: 'expense', parent_id: 25 },
+          { id: 27, name: '加油', type: 'expense', parent_id: 25 }
+        ];
+        localStorage.setItem('categories', JSON.stringify(defaultCategories));
+      }
+      
+      // 初始化支付方式数据
+      if (!localStorage.getItem('paymentMethods')) {
+        const defaultPaymentMethods = [
+          { id: 1, name: '现金' },
+          { id: 2, name: '信用卡' },
+          { id: 3, name: '支付宝' },
+          { id: 4, name: '微信' },
+          { id: 5, name: '银行卡' }
+        ];
+        localStorage.setItem('paymentMethods', JSON.stringify(defaultPaymentMethods));
+      }
+    }
+    
+    // 个人信息保存
+    document.getElementById('personal-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      const name = document.getElementById('name').value;
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+      
+      // 获取当前用户
+      const user = JSON.parse(localStorage.getItem('user') || '{}');
+      
+      // 更新用户信息
+      user.name = name;
+      user.email = email;
+      if (password) {
+        user.password = password;
+      }
+      
+      // 保存到本地存储
+      localStorage.setItem('user', JSON.stringify(user));
+      
+      // 更新用户列表中的信息
+      const users = JSON.parse(localStorage.getItem('users') || '[]');
+      const userIndex = users.findIndex(u => u.id === user.id);
+      if (userIndex !== -1) {
+        users[userIndex] = user;
+        localStorage.setItem('users', JSON.stringify(users));
+      }
+      
+      // 显示成功消息
+      alert('个人信息更新成功！');
+    });
+    
+    // 加载父分类选项
+    function loadParentCategories(selectedId = null) {
+      const categories = JSON.parse(localStorage.getItem('categories') || '[]');
+      const parentSelect = document.getElementById('category-parent');
+      
+      // 清空现有选项，保留"无"选项
+      parentSelect.innerHTML = '<option value="">无</option>';
+      
+      // 添加分类选项
+      categories.forEach(category => {
+        // 排除当前编辑的分类（防止自引用）
+        if (category.id !== selectedId) {
+          const option = document.createElement('option');
+          option.value = category.id;
+          option.textContent = category.name;
+          parentSelect.appendChild(option);
+        }
+      });
+    }
+    
+    // 分类管理
+    function editCategory(id) {
+      console.log('编辑分类：', id);
+      // 获取分类数据
+      const categories = JSON.parse(localStorage.getItem('categories') || '[]');
+      const category = categories.find(c => c.id === id);
+      
+      // 加载父分类选项
+      loadParentCategories(id);
+      
+      if (category) {
+        // 填充表单
+        document.getElementById('category-id').value = category.id;
+        document.getElementById('category-name').value = category.name;
+        document.getElementById('category-type').value = category.type;
+        document.getElementById('category-parent').value = category.parent_id || '';
+      }
+      
+      // 显示编辑模态框
+      document.getElementById('category-modal').classList.remove('hidden');
+    }
+    
+    function deleteCategory(id) {
+      if (confirm('确定要删除这个分类吗？')) {
+        console.log('删除分类：', id);
+        // 获取分类数据
+        let categories = JSON.parse(localStorage.getItem('categories') || '[]');
+        // 过滤掉要删除的分类
+        categories = categories.filter(c => c.id !== id);
+        // 保存到本地存储
+        localStorage.setItem('categories', JSON.stringify(categories));
+        // 显示成功消息
+        alert('分类删除成功！');
+        // 刷新分类列表
+        loadCategoriesNew();
+      }
+    }
+    
+    // 加载分类列表
+    function loadCategories() {
+      const categories = JSON.parse(localStorage.getItem('categories') || '[]');
+      const categoryList = document.getElementById('category-list');
+      
+      if (categories.length === 0) {
+        categoryList.innerHTML = `
+          <tr>
+            <td colspan="4" class="py-8 text-center text-gray-500">
+              暂无分类，点击"添加分类"按钮添加
+            </td>
+          </tr>
+        `;
+        return;
+      }
+      
+      // 生成分类HTML
+      const html = categories.map(category => {
+        const parentCategory = categories.find(c => c.id === category.parent_id);
+        return `
+          <tr class="border-b border-gray-100 hover:bg-gray-50">
+            <td class="py-3 px-4 text-gray-700">${category.name}</td>
+            <td class="py-3 px-4 text-gray-700">${category.type === 'income' ? '收入' : '支出'}</td>
+            <td class="py-3 px-4 text-gray-500">${parentCategory ? parentCategory.name : '无'}</td>
+            <td class="py-3 px-4 text-right">
+              <button class="text-blue-600 hover:text-blue-800 mr-3" onclick="editCategory(${category.id})")>编辑</button>
+              <button class="text-red-600 hover:text-red-800" onclick="deleteCategory(${category.id})")>删除</button>
+            </td>
+          </tr>
+        `;
+      }).join('');
+      
+      categoryList.innerHTML = html;
+    }
+    
+    // 添加分类
+    document.getElementById('add-category').addEventListener('click', function() {
+      console.log('添加分类');
+      // 加载父分类选项
+      loadParentCategories();
+      // 显示编辑模态框
+      document.getElementById('category-modal').classList.remove('hidden');
+      // 清空表单
+      document.getElementById('category-id').value = '';
+      document.getElementById('category-name').value = '';
+      document.getElementById('category-type').value = 'expense';
+      document.getElementById('category-parent').value = '';
+    });
+    
+    // 关闭分类模态框
+    document.getElementById('cancel-category').addEventListener('click', function() {
+      document.getElementById('category-modal').classList.add('hidden');
+    });
+    
+    // 保存分类
+    document.getElementById('category-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      const id = document.getElementById('category-id').value;
+      const name = document.getElementById('category-name').value;
+      const type = document.getElementById('category-type').value;
+      const parent = document.getElementById('category-parent').value;
+      
+      // 获取分类数据
+      let categories = JSON.parse(localStorage.getItem('categories') || '[]');
+      
+      if (id) {
+        // 编辑现有分类
+        const categoryIndex = categories.findIndex(c => c.id === parseInt(id));
+        if (categoryIndex !== -1) {
+          categories[categoryIndex] = {
+            id: parseInt(id),
+            name,
+            type,
+            parent_id: parent ? parseInt(parent) : null
+          };
+        }
+      } else {
+        // 添加新分类
+        const newId = Math.max(...categories.map(c => c.id), 0) + 1;
+        categories.push({
+          id: newId,
+          name,
+          type,
+          parent_id: parent ? parseInt(parent) : null
+        });
+      }
+      
+      // 保存到本地存储
+      localStorage.setItem('categories', JSON.stringify(categories));
+      
+      // 关闭模态框
+      document.getElementById('category-modal').classList.add('hidden');
+      
+      // 刷新分类列表
+      loadCategoriesNew();
+      
+      // 显示成功消息
+      alert('分类保存成功！');
+    });
+    
+    // 支付方式管理
+    function editPayment(id) {
+      console.log('编辑支付方式：', id);
+      // 获取支付方式数据
+      const paymentMethods = JSON.parse(localStorage.getItem('paymentMethods') || '[]');
+      const paymentMethod = paymentMethods.find(p => p.id === id);
+      
+      if (paymentMethod) {
+        // 填充表单
+        document.getElementById('payment-id').value = paymentMethod.id;
+        document.getElementById('payment-name').value = paymentMethod.name;
+      }
+      
+      // 显示编辑模态框
+      document.getElementById('payment-modal').classList.remove('hidden');
+    }
+    
+    function deletePayment(id) {
+      if (confirm('确定要删除这个支付方式吗？')) {
+        console.log('删除支付方式：', id);
+        // 获取支付方式数据
+        let paymentMethods = JSON.parse(localStorage.getItem('paymentMethods') || '[]');
+        // 过滤掉要删除的支付方式
+        paymentMethods = paymentMethods.filter(p => p.id !== id);
+        // 保存到本地存储
+        localStorage.setItem('paymentMethods', JSON.stringify(paymentMethods));
+        // 显示成功消息
+        alert('支付方式删除成功！');
+        // 刷新支付方式列表
+        loadPaymentMethods();
+      }
+    }
+    
+    // 加载支付方式列表
+    function loadPaymentMethods() {
+      const paymentMethods = JSON.parse(localStorage.getItem('paymentMethods') || '[]');
+      const paymentList = document.getElementById('payment-list');
+      
+      if (paymentMethods.length === 0) {
+        paymentList.innerHTML = `
+          <div class="col-span-full py-8 text-center text-gray-500">
+            暂无支付方式，点击"添加支付方式"按钮添加
+          </div>
+        `;
+        return;
+      }
+      
+      // 生成支付方式HTML
+      const html = paymentMethods.map((payment, index) => {
+        const icon = ['现', '信', '支', '微', '银'][index % 5];
+        return `
+          <div class="border border-gray-200 rounded-md p-4 flex justify-between items-center">
+            <div class="flex items-center">
+              <div class="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center mr-3">
+                <span class="text-gray-600">${icon}</span>
+              </div>
+              <span class="text-gray-700">${payment.name}</span>
+            </div>
+            <div>
+              <button class="text-blue-600 hover:text-blue-800 mr-3" onclick="editPayment(${payment.id})")">编辑</button>
+              <button class="text-red-600 hover:text-red-800" onclick="deletePayment(${payment.id})")">删除</button>
+            </div>
+          </div>
+        `;
+      }).join('');
+      
+      paymentList.innerHTML = html;
+    }
+    
+    // 添加支付方式
+    document.getElementById('add-payment').addEventListener('click', function() {
+      console.log('添加支付方式');
+      // 显示编辑模态框
+      document.getElementById('payment-modal').classList.remove('hidden');
+      // 清空表单
+      document.getElementById('payment-id').value = '';
+      document.getElementById('payment-name').value = '';
+    });
+    
+    // 关闭支付方式模态框
+    document.getElementById('cancel-payment').addEventListener('click', function() {
+      document.getElementById('payment-modal').classList.add('hidden');
+    });
+    
+    // 保存支付方式
+    document.getElementById('payment-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      const id = document.getElementById('payment-id').value;
+      const name = document.getElementById('payment-name').value;
+      
+      // 获取支付方式数据
+      let paymentMethods = JSON.parse(localStorage.getItem('paymentMethods') || '[]');
+      
+      if (id) {
+        // 编辑现有支付方式
+        const paymentIndex = paymentMethods.findIndex(p => p.id === parseInt(id));
+        if (paymentIndex !== -1) {
+          paymentMethods[paymentIndex] = {
+            id: parseInt(id),
+            name
+          };
+        }
+      } else {
+        // 添加新支付方式
+        const newId = Math.max(...paymentMethods.map(p => p.id), 0) + 1;
+        paymentMethods.push({
+          id: newId,
+          name
+        });
+      }
+      
+      // 保存到本地存储
+      localStorage.setItem('paymentMethods', JSON.stringify(paymentMethods));
+      
+      // 关闭模态框
+      document.getElementById('payment-modal').classList.add('hidden');
+      
+      // 刷新支付方式列表
+      loadPaymentMethods();
+      
+      // 显示成功消息
+      alert('支付方式保存成功！');
+    });
+    
+    // 数据备份与恢复
+    document.getElementById('export-data').addEventListener('click', function() {
+      console.log('导出数据');
+      // 导出数据到本地文件
+      const data = {
+        users: JSON.parse(localStorage.getItem('users') || '[]'),
+        user: JSON.parse(localStorage.getItem('user') || '{}'),
+        transactions: JSON.parse(localStorage.getItem('transactions') || '[]'),
+        categories: JSON.parse(localStorage.getItem('categories') || '[]'),
+        paymentMethods: JSON.parse(localStorage.getItem('paymentMethods') || '[]')
+      };
+      
+      const dataStr = JSON.stringify(data, null, 2);
+      const dataBlob = new Blob([dataStr], { type: 'application/json' });
+      const url = URL.createObjectURL(dataBlob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = 'personal-finance-backup.json';
+      link.click();
+      URL.revokeObjectURL(url);
+      
+      alert('数据导出成功！');
+    });
+    
+    document.getElementById('import-data').addEventListener('click', function() {
+      console.log('导入数据');
+      // 创建文件输入
+      const input = document.createElement('input');
+      input.type = 'file';
+      input.accept = '.json';
+      input.onchange = function(e) {
+        const file = e.target.files[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = function(e) {
+            try {
+              const data = JSON.parse(e.target.result);
+              // 导入数据
+              if (data.users) localStorage.setItem('users', JSON.stringify(data.users));
+              if (data.user) localStorage.setItem('user', JSON.stringify(data.user));
+              if (data.transactions) localStorage.setItem('transactions', JSON.stringify(data.transactions));
+              if (data.categories) localStorage.setItem('categories', JSON.stringify(data.categories));
+              if (data.paymentMethods) localStorage.setItem('paymentMethods', JSON.stringify(data.paymentMethods));
+              
+              // 刷新列表
+              loadCategories();
+              loadPaymentMethods();
+              
+              alert('数据导入成功！');
+            } catch (error) {
+              alert('数据导入失败：' + error.message);
+            }
+          };
+          reader.readAsText(file);
+        }
+      };
+      input.click();
+    });
+    
+    document.getElementById('clear-data').addEventListener('click', function() {
+      if (confirm('确定要清空所有数据吗？此操作不可恢复！')) {
+        console.log('清空数据');
+        // 清空本地存储
+        localStorage.removeItem('users');
+        localStorage.removeItem('user');
+        localStorage.removeItem('transactions');
+        localStorage.removeItem('categories');
+        localStorage.removeItem('paymentMethods');
+        alert('数据清空成功！');
+        // 跳转到登录页面
+        window.location.href = '/login';
+      }
+    });
+    
+    // 递归生成分类HTML（带缩进）
+    function generateCategoryHTML(categoryList, allCategories, level) {
+      let html = '';
+      const indent = level * 24; // 每个层级缩进24px，增强层级感
+      const indicator = level > 0 ? '└─ ' : ''; // 为子分类添加视觉指示器
+      
+      categoryList.forEach(category => {
+        // 获取父分类名称
+        let parentName = '无';
+        if (category.parent_id) {
+          const parentCategory = allCategories.find(c => c.id === category.parent_id);
+          if (parentCategory) {
+            parentName = parentCategory.name;
+          }
+        }
+        
+        html += `
+          <tr class="border-b border-gray-100 hover:bg-gray-50">
+            <td class="py-3 px-4 text-gray-700" style="padding-left: ${40 + indent}px;">${indicator}${category.name}</td>
+            <td class="py-3 px-4 text-gray-700">${category.type === 'income' ? '收入' : '支出'}</td>
+            <td class="py-3 px-4 text-gray-500">${parentName}</td>
+            <td class="py-3 px-4 text-right">
+              <button class="text-blue-600 hover:text-blue-800 mr-3" onclick="editCategory(${category.id})")>编辑</button>
+              <button class="text-red-600 hover:text-red-800" onclick="deleteCategory(${category.id})")>删除</button>
+            </td>
+          </tr>
+        `;
+        
+        // 递归处理子分类
+        const childCategories = allCategories.filter(c => c.parent_id === category.id);
+        if (childCategories.length > 0) {
+          html += generateCategoryHTML(childCategories, allCategories, level + 1);
+        }
+      });
+      
+      return html;
+    }
+    
+    // 新的加载分类列表函数
+    function loadCategoriesNew() {
+      const categories = JSON.parse(localStorage.getItem('categories') || '[]');
+      const categoryList = document.getElementById('category-list');
+      
+      if (categories.length === 0) {
+        categoryList.innerHTML = `
+          <tr>
+            <td colspan="4" class="py-8 text-center text-gray-500">
+              暂无分类，点击"添加分类"按钮添加
+            </td>
+          </tr>
+        `;
+        return;
+      }
+      
+      // 按类型分组
+      const categoriesByType = {
+        income: [],
+        expense: []
+      };
+      
+      categories.forEach(category => {
+        if (categoriesByType[category.type]) {
+          categoriesByType[category.type].push(category);
+        }
+      });
+      
+      // 生成分类HTML（按类型分组并缩进子分类）
+      let html = '';
+      
+      // 处理收入分类
+      if (categoriesByType.income.length > 0) {
+        html += `
+          <tr class="bg-gray-50 font-medium">
+            <td colspan="4" class="py-2 px-4 text-gray-700">收入分类</td>
+          </tr>
+        `;
+        // 只传递顶级分类
+        const topLevelIncomeCategories = categoriesByType.income.filter(c => c.parent_id === null);
+        html += generateCategoryHTML(topLevelIncomeCategories, categories, 0);
+      }
+      
+      // 处理支出分类
+      if (categoriesByType.expense.length > 0) {
+        html += `
+          <tr class="bg-gray-50 font-medium">
+            <td colspan="4" class="py-2 px-4 text-gray-700">支出分类</td>
+          </tr>
+        `;
+        // 只传递顶级分类
+        const topLevelExpenseCategories = categoriesByType.expense.filter(c => c.parent_id === null);
+        html += generateCategoryHTML(topLevelExpenseCategories, categories, 0);
+      }
+      
+      categoryList.innerHTML = html;
+    }
+    
+    // 页面加载完成后执行
+    document.addEventListener('DOMContentLoaded', function() {
+      // 初始化本地存储数据
+      initLocalStorage();
+      
+      // 加载分类和支付方式列表
+      loadCategoriesNew();
+      loadPaymentMethods();
+      
+      // 填充个人信息表单
+      const user = JSON.parse(localStorage.getItem('user') || '{}');
+      if (user.name) {
+        document.getElementById('name').value = user.name;
+      }
+      if (user.email) {
+        document.getElementById('email').value = user.email;
+      }
+      
+      // 重命名函数，确保所有调用都使用新函数
+      window.loadCategories = loadCategoriesNew;
+    });
+    
+    // 暴露函数到全局作用域
+    window.editCategory = editCategory;
+    window.deleteCategory = deleteCategory;
+    window.editPayment = editPayment;
+    window.deletePayment = deletePayment;
+  </script>
+</Layout>

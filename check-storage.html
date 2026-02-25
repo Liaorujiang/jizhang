@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>检查本地存储</title>
+</head>
+<body>
+  <h1>本地存储数据</h1>
+  <div id="storage-data"></div>
+
+  <script>
+    function displayStorageData() {
+      const transactions = JSON.parse(localStorage.getItem('transactions') || '[]');
+      const categories = JSON.parse(localStorage.getItem('categories') || '[]');
+      const paymentMethods = JSON.parse(localStorage.getItem('paymentMethods') || '[]');
+      const user = JSON.parse(localStorage.getItem('user') || 'null');
+
+      const container = document.getElementById('storage-data');
+      container.innerHTML = `
+        <h2>用户数据</h2>
+        <pre>${JSON.stringify(user, null, 2)}</pre>
+        
+        <h2>交易记录 (${transactions.length} 条)</h2>
+        <pre>${JSON.stringify(transactions, null, 2)}</pre>
+        
+        <h2>分类 (${categories.length} 个)</h2>
+        <pre>${JSON.stringify(categories, null, 2)}</pre>
+        
+        <h2>支付方式 (${paymentMethods.length} 个)</h2>
+        <pre>${JSON.stringify(paymentMethods, null, 2)}</pre>
+      `;
+    }
+
+    displayStorageData();
+  </script>
+</body>
+</html>

@@ -1,0 +1,109 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout>
+  <div class="max-w-2xl mx-auto bg-white rounded-lg shadow-md p-6">
+    <h1 class="text-2xl font-bold text-gray-800 mb-6">添加记账记录</h1>
+    
+    <form class="space-y-6">
+      <!-- 交易类型 -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">交易类型</label>
+        <div class="flex space-x-4">
+          <label class="flex items-center">
+            <input type="radio" name="type" value="income" class="h-4 w-4 text-blue-600" checked>
+            <span class="ml-2 text-green-600 font-medium">收入</span>
+          </label>
+          <label class="flex items-center">
+            <input type="radio" name="type" value="expense" class="h-4 w-4 text-blue-600">
+            <span class="ml-2 text-red-600 font-medium">支出</span>
+          </label>
+          <label class="flex items-center">
+            <input type="radio" name="type" value="transfer" class="h-4 w-4 text-blue-600">
+            <span class="ml-2 text-blue-600 font-medium">转账</span>
+          </label>
+        </div>
+      </div>
+      
+      <!-- 金额 -->
+      <div>
+        <label for="amount" class="block text-sm font-medium text-gray-700 mb-1">金额</label>
+        <div class="relative">
+          <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">¥</span>
+          <input type="number" id="amount" name="amount" step="0.01" min="0" class="w-full pl-8 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="0.00" required>
+        </div>
+      </div>
+      
+      <!-- 分类 -->
+      <div>
+        <label for="category" class="block text-sm font-medium text-gray-700 mb-1">分类</label>
+        <select id="category" name="category" class="w-full pl-3 pr-10 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" required>
+          <option value="">请选择分类</option>
+          <!-- 收入分类 -->
+          <optgroup label="收入">
+            <option value="1">工资</option>
+            <option value="2">奖金</option>
+            <option value="3">投资收益</option>
+            <option value="4">其他收入</option>
+          </optgroup>
+          <!-- 支出分类 -->
+          <optgroup label="支出">
+            <option value="5">餐饮</option>
+            <option value="9">交通</option>
+            <option value="13">购物</option>
+            <option value="16">娱乐</option>
+            <option value="19">其他支出</option>
+          </optgroup>
+          <!-- 转账分类 -->
+          <optgroup label="转账">
+            <option value="20">银行卡转账</option>
+            <option value="21">支付宝转账</option>
+            <option value="22">微信转账</option>
+          </optgroup>
+        </select>
+      </div>
+      
+      <!-- 支付方式 -->
+      <div>
+        <label for="payment" class="block text-sm font-medium text-gray-700 mb-1">支付方式</label>
+        <select id="payment" name="payment" class="w-full pl-3 pr-10 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" required>
+          <option value="">请选择支付方式</option>
+          <option value="1">现金</option>
+          <option value="2">信用卡</option>
+          <option value="3">支付宝</option>
+          <option value="4">微信</option>
+          <option value="5">银行卡</option>
+        </select>
+      </div>
+      
+      <!-- 日期和时间 -->
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label for="date" class="block text-sm font-medium text-gray-700 mb-1">日期</label>
+          <input type="date" id="date" name="date" class="w-full pl-3 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" required>
+        </div>
+        <div>
+          <label for="time" class="block text-sm font-medium text-gray-700 mb-1">时间</label>
+          <input type="time" id="time" name="time" class="w-full pl-3 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" required>
+        </div>
+      </div>
+      
+      <!-- 备注 -->
+      <div>
+        <label for="note" class="block text-sm font-medium text-gray-700 mb-1">备注</label>
+        <textarea id="note" name="note" rows="3" class="w-full pl-3 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="添加备注（可选）"></textarea>
+      </div>
+      
+      <!-- 提交按钮 -->
+      <div class="flex justify-end space-x-4">
+        <a href="/" class="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 transition-colors">
+          取消
+        </a>
+        <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors">
+          保存
+        </button>
+      </div>
+    </form>
+  </div>
+</Layout>

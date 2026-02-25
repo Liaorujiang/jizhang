@@ -1,0 +1,37 @@
+localStorage.getItem('transactions')localStorage.getItem('transactions')---
+import '../styles/global.css';
+---
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>个人记账</title>
+</head>
+<body class="bg-gray-50 min-h-screen">
+  <header class="bg-blue-600 text-white shadow-md">
+    <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+      <h1 class="text-2xl font-bold">个人记账</h1>
+      <nav>
+        <ul class="flex space-x-6">
+          <li><a href="/" class="hover:text-blue-200 transition-colors">首页</a></li>
+          <li><a href="/add" class="hover:text-blue-200 transition-colors">记账</a></li>
+          <li><a href="/reports" class="hover:text-blue-200 transition-colors">报表</a></li>
+          <li><a href="/settings" class="hover:text-blue-200 transition-colors">设置</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+  
+  <main class="container mx-auto px-4 py-8">
+    <slot />
+  </main>
+  
+  <footer class="bg-gray-800 text-white py-6 mt-12">
+    <div class="container mx-auto px-4 text-center">
+      <p>&copy; 2026 个人记账 - 管理您的财务</p>
+    </div>
+  </footer>
+</body>
+</html>
