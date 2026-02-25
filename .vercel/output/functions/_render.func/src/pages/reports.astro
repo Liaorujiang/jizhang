@@ -1,0 +1,180 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout>
+  <h1 class="text-2xl font-bold text-gray-800 mb-6">财务报表</h1>
+  
+  <!-- 时间筛选 -->
+  <div class="bg-white rounded-lg shadow-md p-4 mb-6">
+    <div class="flex flex-wrap items-center gap-4">
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">时间范围</label>
+        <select id="time-range" class="pl-3 pr-10 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+          <option>本月</option>
+          <option>上月</option>
+          <option>本季度</option>
+          <option>本年</option>
+          <option>自定义</option>
+        </select>
+      </div>
+      <div class="flex items-end">
+        <button id="apply-filter" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors">
+          应用
+        </button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- 收支概览 -->
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+    <div class="bg-white rounded-lg shadow-md p-6">
+      <h2 class="text-lg font-semibold text-gray-700 mb-4">收支趋势</h2>
+      <div class="h-64 bg-gray-100 rounded-md flex items-center justify-center">
+        <p class="text-gray-500" id="income-expense-trend">收支趋势图表</p>
+      </div>
+    </div>
+    
+    <div class="bg-white rounded-lg shadow-md p-6">
+      <h2 class="text-lg font-semibold text-gray-700 mb-4">收支对比</h2>
+      <div class="h-64 bg-gray-100 rounded-md flex items-center justify-center">
+        <p class="text-gray-500" id="income-expense-comparison">收支对比图表</p>
+      </div>
+    </div>
+  </div>
+  
+  <!-- 分类分析 -->
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+    <div class="bg-white rounded-lg shadow-md p-6">
+      <h2 class="text-lg font-semibold text-gray-700 mb-4">支出分类</h2>
+      <div class="h-64 bg-gray-100 rounded-md flex items-center justify-center">
+        <p class="text-gray-500" id="expense-category-analysis">支出分类图表</p>
+      </div>
+    </div>
+    
+    <div class="bg-white rounded-lg shadow-md p-6">
+      <h2 class="text-lg font-semibold text-gray-700 mb-4">收入来源</h2>
+      <div class="h-64 bg-gray-100 rounded-md flex items-center justify-center">
+        <p class="text-gray-500" id="income-source-analysis">收入来源图表</p>
+      </div>
+    </div>
+  </div>
+  
+  <!-- 支付方式分析 -->
+  <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+    <h2 class="text-lg font-semibold text-gray-700 mb-4">支付方式分析</h2>
+    <div class="h-64 bg-gray-100 rounded-md flex items-center justify-center">
+      <p class="text-gray-500" id="payment-method-analysis">支付方式分析图表</p>
+    </div>
+  </div>
+  
+  <!-- 储蓄率变化 -->
+  <div class="bg-white rounded-lg shadow-md p-6">
+    <h2 class="text-lg font-semibold text-gray-700 mb-4">储蓄率变化</h2>
+    <div class="h-64 bg-gray-100 rounded-md flex items-center justify-center">
+      <p class="text-gray-500" id="savings-rate-trend">储蓄率变化图表</p>
+    </div>
+  </div>
+  
+  <script>
+    // 获取用户信息
+    async function getUserInfo() {
+      try {
+        const response = await fetch('/api/auth/me');
+        if (response.ok) {
+          const data = await response.json();
+          if (data.success) {
+            return data.user;
+          }
+        }
+        // 未登录，跳转到登录页面
+        window.location.href = '/login';
+      } catch (error) {
+        console.error('获取用户信息失败:', error);
+        alert('获取用户信息失败，请重新登录');
+        window.location.href = '/login';
+      }
+    }
+    
+    // 加载报表数据
+    async function loadReportData() {
+      try {
+        // 确保用户已登录
+        await getUserInfo();
+        
+        const timeRange = document.getElementById('time-range').value;
+        
+        console.log('加载报表数据，时间范围：', timeRange);
+        
+        // 更新图表显示
+        document.getElementById('income-expense-trend').textContent = '加载中...';
+        document.getElementById('income-expense-comparison').textContent = '加载中...';
+        document.getElementById('expense-category-analysis').textContent = '加载中...';
+        document.getElementById('income-source-analysis').textContent = '加载中...';
+        document.getElementById('payment-method-analysis').textContent = '加载中...';
+        document.getElementById('savings-rate-trend').textContent = '加载中...';
+        
+        // 获取交易记录
+        const response = await fetch('/api/records');
+        const data = await response.json();
+        
+        if (data.success) {
+          const transactions = data.records;
+          console.log('交易记录数量：', transactions.length);
+          
+          // 计算收支数据
+          let totalIncome = 0;
+          let totalExpense = 0;
+          const categoryExpenses = {};
+          const incomeSources = {};
+          const paymentMethods = {};
+          
+          transactions.forEach(transaction => {
+            if (transaction.type === 'income') {
+              totalIncome += transaction.amount;
+              // 统计收入来源
+              const categoryName = transaction.categoryName || '未知分类';
+              incomeSources[categoryName] = (incomeSources[categoryName] || 0) + transaction.amount;
+            } else if (transaction.type === 'expense') {
+              totalExpense += transaction.amount;
+              // 统计支出分类
+              const categoryName = transaction.categoryName || '未知分类';
+              categoryExpenses[categoryName] = (categoryExpenses[categoryName] || 0) + transaction.amount;
+            }
+            
+            // 统计支付方式
+            const paymentName = transaction.paymentMethodName || '未知支付方式';
+            paymentMethods[paymentName] = (paymentMethods[paymentName] || 0) + transaction.amount;
+          });
+          
+          // 更新图表显示
+          document.getElementById('income-expense-trend').textContent = `本月收入: ¥${totalIncome.toFixed(2)}, 本月支出: ¥${totalExpense.toFixed(2)}`;
+          document.getElementById('income-expense-comparison').textContent = `结余: ¥${(totalIncome - totalExpense).toFixed(2)}`;
+          document.getElementById('expense-category-analysis').textContent = `支出分类: ${Object.keys(categoryExpenses).length} 个`;
+          document.getElementById('income-source-analysis').textContent = `收入来源: ${Object.keys(incomeSources).length} 个`;
+          document.getElementById('payment-method-analysis').textContent = `支付方式: ${Object.keys(paymentMethods).length} 种`;
+          document.getElementById('savings-rate-trend').textContent = `储蓄率: ${totalIncome > 0 ? ((totalIncome - totalExpense) / totalIncome * 100).toFixed(1) : 0}%`;
+          
+          console.log('报表数据加载完成');
+        }
+      } catch (error) {
+        console.error('加载报表数据失败:', error);
+        alert('加载报表数据失败，请重试');
+      }
+    }
+    
+    // 页面加载完成后执行
+    document.addEventListener('DOMContentLoaded', async function() {
+      // 确保用户已登录
+      await getUserInfo();
+      // 加载初始数据
+      await loadReportData();
+      
+      // 添加时间范围变更事件
+      document.getElementById('time-range').addEventListener('change', loadReportData);
+      
+      // 添加应用按钮点击事件
+      document.getElementById('apply-filter').addEventListener('click', loadReportData);
+    });
+  </script>
+</Layout>
