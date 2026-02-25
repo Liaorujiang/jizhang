@@ -765,14 +765,6 @@
       "createdAt": "2026-02-25T11:55:55.956Z"
     },
     {
-      "id": 91,
-      "name": "投资收益",
-      "type": "income",
-      "parentId": null,
-      "userId": 5,
-      "createdAt": "2026-02-25T11:55:55.956Z"
-    },
-    {
       "id": 92,
       "name": "其他收入",
       "type": "income",
