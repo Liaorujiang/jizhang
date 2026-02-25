@@ -5,5 +5,35 @@
       "src": "package.json",
       "use": "@vercel/astro"
     }
+  ],
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "/api/$1"
+    },
+    {
+      "src": "/login",
+      "dest": "/login"
+    },
+    {
+      "src": "/register",
+      "dest": "/register"
+    },
+    {
+      "src": "/add",
+      "dest": "/add"
+    },
+    {
+      "src": "/reports",
+      "dest": "/reports"
+    },
+    {
+      "src": "/settings",
+      "dest": "/settings"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/"
+    }
   ]
 }
