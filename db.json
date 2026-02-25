@@ -1,0 +1,1756 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "username": "是的",
+      "password": "$2a$10$YUfyra7p.rRnEMG4lmgWKuH3iOW7gGiA5Pb/X3AW65jOEQkj2Apwy",
+      "email": "3242@qq.com",
+      "createdAt": "2026-02-25T11:26:11.600Z"
+    },
+    {
+      "id": 2,
+      "username": "胜多负少",
+      "password": "$2a$10$8RS0MJtHVhKGvV7rjztanuWm7Hb5r89zMGzTI7.HPV/aMlpRuy6La",
+      "email": "2332423@qq.com",
+      "createdAt": "2026-02-25T11:30:03.999Z"
+    },
+    {
+      "id": 3,
+      "username": "风格化规范化",
+      "password": "$2a$10$4wjKh6bEgAaGYcciIe3yweXhMH.fBGOGIE4E2sdt2nUKrkLAdDX6W",
+      "email": "sdfdsf@qq.com",
+      "createdAt": "2026-02-25T11:41:14.640Z"
+    },
+    {
+      "id": 4,
+      "username": "324234@qq.com",
+      "password": "$2a$10$OojisuJq0RFWa4CrgiQ0K.n5N2GiCSve.xqIkIH9z5JLlSSkh2Spq",
+      "email": "324234@qq.com",
+      "createdAt": "2026-02-25T11:43:36.900Z"
+    },
+    {
+      "id": 5,
+      "username": "ggggffdsdfsf@qq.com",
+      "password": "$2a$10$sMRSFePOvTf6PYK3ZI5fLucwwQkaqboyOKv87eC7QpNIhImIiafIm",
+      "email": "ggggffdsdfsf@qq.com",
+      "createdAt": "2026-02-25T11:55:55.946Z"
+    },
+    {
+      "id": 6,
+      "username": "tttttttttt@qq.com",
+      "password": "$2a$10$axJB..xJ4t01QAB2pYRmJOm7ip0/EGuxZoUTM.TzdCSHqfzdExtVe",
+      "email": "tttttttttt@qq.com",
+      "createdAt": "2026-02-25T11:57:01.661Z"
+    }
+  ],
+  "categories": [
+    {
+      "id": 1,
+      "name": "工资",
+      "type": "income",
+      "parentId": null,
+      "userId": 1,
+      "createdAt": "2026-02-25T11:26:11.610Z"
+    },
+    {
+      "id": 2,
+      "name": "奖金",
+      "type": "income",
+      "parentId": null,
+      "userId": 1,
+      "createdAt": "2026-02-25T11:26:11.610Z"
+    },
+    {
+      "id": 3,
+      "name": "投资收益",
+      "type": "income",
+      "parentId": null,
+      "userId": 1,
+      "createdAt": "2026-02-25T11:26:11.610Z"
+    },
+    {
+      "id": 4,
+      "name": "其他收入",
+      "type": "income",
+      "parentId": null,
+      "userId": 1,
+      "createdAt": "2026-02-25T11:26:11.610Z"
+    },
+    {
+      "id": 5,
+      "name": "餐饮",
+      "type": "expense",
+      "parentId": null,
+      "userId": 1,
+      "createdAt": "2026-02-25T11:26:11.610Z"
+    },
+    {
+      "id": 6,
+      "name": "午餐",
+      "type": "expense",
+      "parentId": 5,
+      "userId": 1,
+      "createdAt": "2026-02-25T11:26:11.610Z"
+    },
+    {
+      "id": 7,
+      "name": "晚餐",
+      "type": "expense",
+      "parentId": 5,
+      "userId": 1,
+      "createdAt": "2026-02-25T11:26:11.610Z"
+    },
+    {
+      "id": 8,
+      "name": "外卖",
+      "type": "expense",
+      "parentId": 5,
+      "userId": 1,
+      "createdAt": "2026-02-25T11:26:11.610Z"
+    },
+    {
+      "id": 9,
+      "name": "交通",
+      "type": "expense",
+      "parentId": null,
+      "userId": 1,
+      "createdAt": "2026-02-25T11:26:11.610Z"
+    },
+    {
+      "id": 10,
+      "name": "公交",
+      "type": "expense",
+      "parentId": 9,
+      "userId": 1,
+      "createdAt": "2026-02-25T11:26:11.610Z"
+    },
+    {
+      "id": 11,
+      "name": "地铁",
+      "type": "expense",
+      "parentId": 9,
+      "userId": 1,
+      "createdAt": "2026-02-25T11:26:11.610Z"
+    },
+    {
+      "id": 12,
+      "name": "打车",
+      "type": "expense",
+      "parentId": 9,
+      "userId": 1,
+      "createdAt": "2026-02-25T11:26:11.610Z"
+    },
+    {
+      "id": 13,
+      "name": "购物",
+      "type": "expense",
+      "parentId": null,
+      "userId": 1,
+      "createdAt": "2026-02-25T11:26:11.610Z"
+    },
+    {
+      "id": 14,
+      "name": "服装",
+      "type": "expense",
+      "parentId": 13,
+      "userId": 1,
+      "createdAt": "2026-02-25T11:26:11.610Z"
+    },
+    {
+      "id": 15,
+      "name": "日用品",
+      "type": "expense",
+      "parentId": 13,
+      "userId": 1,
+      "createdAt": "2026-02-25T11:26:11.610Z"
+    },
+    {
+      "id": 16,
+      "name": "娱乐",
+      "type": "expense",
+      "parentId": null,
+      "userId": 1,
+      "createdAt": "2026-02-25T11:26:11.610Z"
+    },
+    {
+      "id": 17,
+      "name": "电影",
+      "type": "expense",
+      "parentId": 16,
+      "userId": 1,
+      "createdAt": "2026-02-25T11:26:11.610Z"
+    },
+    {
+      "id": 18,
+      "name": "游戏",
+      "type": "expense",
+      "parentId": 16,
+      "userId": 1,
+      "createdAt": "2026-02-25T11:26:11.610Z"
+    },
+    {
+      "id": 19,
+      "name": "其他支出",
+      "type": "expense",
+      "parentId": null,
+      "userId": 1,
+      "createdAt": "2026-02-25T11:26:11.610Z"
+    },
+    {
+      "id": 20,
+      "name": "银行卡转账",
+      "type": "transfer",
+      "parentId": null,
+      "userId": 1,
+      "createdAt": "2026-02-25T11:26:11.610Z"
+    },
+    {
+      "id": 21,
+      "name": "支付宝转账",
+      "type": "transfer",
+      "parentId": null,
+      "userId": 1,
+      "createdAt": "2026-02-25T11:26:11.610Z"
+    },
+    {
+      "id": 22,
+      "name": "微信转账",
+      "type": "transfer",
+      "parentId": null,
+      "userId": 1,
+      "createdAt": "2026-02-25T11:26:11.610Z"
+    },
+    {
+      "id": 23,
+      "name": "工资",
+      "type": "income",
+      "parentId": null,
+      "userId": 2,
+      "createdAt": "2026-02-25T11:30:04.004Z"
+    },
+    {
+      "id": 24,
+      "name": "奖金",
+      "type": "income",
+      "parentId": null,
+      "userId": 2,
+      "createdAt": "2026-02-25T11:30:04.004Z"
+    },
+    {
+      "id": 25,
+      "name": "投资收益",
+      "type": "income",
+      "parentId": null,
+      "userId": 2,
+      "createdAt": "2026-02-25T11:30:04.004Z"
+    },
+    {
+      "id": 26,
+      "name": "其他收入",
+      "type": "income",
+      "parentId": null,
+      "userId": 2,
+      "createdAt": "2026-02-25T11:30:04.004Z"
+    },
+    {
+      "id": 27,
+      "name": "餐饮",
+      "type": "expense",
+      "parentId": null,
+      "userId": 2,
+      "createdAt": "2026-02-25T11:30:04.004Z"
+    },
+    {
+      "id": 28,
+      "name": "午餐",
+      "type": "expense",
+      "parentId": 27,
+      "userId": 2,
+      "createdAt": "2026-02-25T11:30:04.004Z"
+    },
+    {
+      "id": 29,
+      "name": "晚餐",
+      "type": "expense",
+      "parentId": 27,
+      "userId": 2,
+      "createdAt": "2026-02-25T11:30:04.004Z"
+    },
+    {
+      "id": 30,
+      "name": "外卖",
+      "type": "expense",
+      "parentId": 27,
+      "userId": 2,
+      "createdAt": "2026-02-25T11:30:04.004Z"
+    },
+    {
+      "id": 31,
+      "name": "交通",
+      "type": "expense",
+      "parentId": null,
+      "userId": 2,
+      "createdAt": "2026-02-25T11:30:04.004Z"
+    },
+    {
+      "id": 32,
+      "name": "公交",
+      "type": "expense",
+      "parentId": 31,
+      "userId": 2,
+      "createdAt": "2026-02-25T11:30:04.004Z"
+    },
+    {
+      "id": 33,
+      "name": "地铁",
+      "type": "expense",
+      "parentId": 31,
+      "userId": 2,
+      "createdAt": "2026-02-25T11:30:04.004Z"
+    },
+    {
+      "id": 34,
+      "name": "打车",
+      "type": "expense",
+      "parentId": 31,
+      "userId": 2,
+      "createdAt": "2026-02-25T11:30:04.004Z"
+    },
+    {
+      "id": 35,
+      "name": "购物",
+      "type": "expense",
+      "parentId": null,
+      "userId": 2,
+      "createdAt": "2026-02-25T11:30:04.004Z"
+    },
+    {
+      "id": 36,
+      "name": "服装",
+      "type": "expense",
+      "parentId": 35,
+      "userId": 2,
+      "createdAt": "2026-02-25T11:30:04.004Z"
+    },
+    {
+      "id": 37,
+      "name": "日用品",
+      "type": "expense",
+      "parentId": 35,
+      "userId": 2,
+      "createdAt": "2026-02-25T11:30:04.004Z"
+    },
+    {
+      "id": 38,
+      "name": "娱乐",
+      "type": "expense",
+      "parentId": null,
+      "userId": 2,
+      "createdAt": "2026-02-25T11:30:04.004Z"
+    },
+    {
+      "id": 39,
+      "name": "电影",
+      "type": "expense",
+      "parentId": 38,
+      "userId": 2,
+      "createdAt": "2026-02-25T11:30:04.004Z"
+    },
+    {
+      "id": 40,
+      "name": "游戏",
+      "type": "expense",
+      "parentId": 38,
+      "userId": 2,
+      "createdAt": "2026-02-25T11:30:04.004Z"
+    },
+    {
+      "id": 41,
+      "name": "其他支出",
+      "type": "expense",
+      "parentId": null,
+      "userId": 2,
+      "createdAt": "2026-02-25T11:30:04.004Z"
+    },
+    {
+      "id": 42,
+      "name": "银行卡转账",
+      "type": "transfer",
+      "parentId": null,
+      "userId": 2,
+      "createdAt": "2026-02-25T11:30:04.004Z"
+    },
+    {
+      "id": 43,
+      "name": "支付宝转账",
+      "type": "transfer",
+      "parentId": null,
+      "userId": 2,
+      "createdAt": "2026-02-25T11:30:04.004Z"
+    },
+    {
+      "id": 44,
+      "name": "微信转账",
+      "type": "transfer",
+      "parentId": null,
+      "userId": 2,
+      "createdAt": "2026-02-25T11:30:04.004Z"
+    },
+    {
+      "id": 45,
+      "name": "工资",
+      "type": "income",
+      "parentId": null,
+      "userId": 3,
+      "createdAt": "2026-02-25T11:41:14.645Z"
+    },
+    {
+      "id": 46,
+      "name": "奖金",
+      "type": "income",
+      "parentId": null,
+      "userId": 3,
+      "createdAt": "2026-02-25T11:41:14.645Z"
+    },
+    {
+      "id": 47,
+      "name": "投资收益",
+      "type": "income",
+      "parentId": null,
+      "userId": 3,
+      "createdAt": "2026-02-25T11:41:14.645Z"
+    },
+    {
+      "id": 48,
+      "name": "其他收入",
+      "type": "income",
+      "parentId": null,
+      "userId": 3,
+      "createdAt": "2026-02-25T11:41:14.645Z"
+    },
+    {
+      "id": 49,
+      "name": "餐饮",
+      "type": "expense",
+      "parentId": null,
+      "userId": 3,
+      "createdAt": "2026-02-25T11:41:14.645Z"
+    },
+    {
+      "id": 50,
+      "name": "午餐",
+      "type": "expense",
+      "parentId": 49,
+      "userId": 3,
+      "createdAt": "2026-02-25T11:41:14.645Z"
+    },
+    {
+      "id": 51,
+      "name": "晚餐",
+      "type": "expense",
+      "parentId": 49,
+      "userId": 3,
+      "createdAt": "2026-02-25T11:41:14.645Z"
+    },
+    {
+      "id": 52,
+      "name": "外卖",
+      "type": "expense",
+      "parentId": 49,
+      "userId": 3,
+      "createdAt": "2026-02-25T11:41:14.645Z"
+    },
+    {
+      "id": 53,
+      "name": "交通",
+      "type": "expense",
+      "parentId": null,
+      "userId": 3,
+      "createdAt": "2026-02-25T11:41:14.645Z"
+    },
+    {
+      "id": 54,
+      "name": "公交",
+      "type": "expense",
+      "parentId": 53,
+      "userId": 3,
+      "createdAt": "2026-02-25T11:41:14.645Z"
+    },
+    {
+      "id": 55,
+      "name": "地铁",
+      "type": "expense",
+      "parentId": 53,
+      "userId": 3,
+      "createdAt": "2026-02-25T11:41:14.645Z"
+    },
+    {
+      "id": 56,
+      "name": "打车",
+      "type": "expense",
+      "parentId": 53,
+      "userId": 3,
+      "createdAt": "2026-02-25T11:41:14.645Z"
+    },
+    {
+      "id": 57,
+      "name": "购物",
+      "type": "expense",
+      "parentId": null,
+      "userId": 3,
+      "createdAt": "2026-02-25T11:41:14.645Z"
+    },
+    {
+      "id": 58,
+      "name": "服装",
+      "type": "expense",
+      "parentId": 57,
+      "userId": 3,
+      "createdAt": "2026-02-25T11:41:14.645Z"
+    },
+    {
+      "id": 59,
+      "name": "日用品",
+      "type": "expense",
+      "parentId": 57,
+      "userId": 3,
+      "createdAt": "2026-02-25T11:41:14.645Z"
+    },
+    {
+      "id": 60,
+      "name": "娱乐",
+      "type": "expense",
+      "parentId": null,
+      "userId": 3,
+      "createdAt": "2026-02-25T11:41:14.645Z"
+    },
+    {
+      "id": 61,
+      "name": "电影",
+      "type": "expense",
+      "parentId": 60,
+      "userId": 3,
+      "createdAt": "2026-02-25T11:41:14.645Z"
+    },
+    {
+      "id": 62,
+      "name": "游戏",
+      "type": "expense",
+      "parentId": 60,
+      "userId": 3,
+      "createdAt": "2026-02-25T11:41:14.645Z"
+    },
+    {
+      "id": 63,
+      "name": "其他支出",
+      "type": "expense",
+      "parentId": null,
+      "userId": 3,
+      "createdAt": "2026-02-25T11:41:14.645Z"
+    },
+    {
+      "id": 64,
+      "name": "银行卡转账",
+      "type": "transfer",
+      "parentId": null,
+      "userId": 3,
+      "createdAt": "2026-02-25T11:41:14.645Z"
+    },
+    {
+      "id": 65,
+      "name": "支付宝转账",
+      "type": "transfer",
+      "parentId": null,
+      "userId": 3,
+      "createdAt": "2026-02-25T11:41:14.645Z"
+    },
+    {
+      "id": 66,
+      "name": "微信转账",
+      "type": "transfer",
+      "parentId": null,
+      "userId": 3,
+      "createdAt": "2026-02-25T11:41:14.645Z"
+    },
+    {
+      "id": 67,
+      "name": "工资",
+      "type": "income",
+      "parentId": null,
+      "userId": 4,
+      "createdAt": "2026-02-25T11:43:36.907Z"
+    },
+    {
+      "id": 68,
+      "name": "奖金",
+      "type": "income",
+      "parentId": null,
+      "userId": 4,
+      "createdAt": "2026-02-25T11:43:36.907Z"
+    },
+    {
+      "id": 69,
+      "name": "投资收益",
+      "type": "income",
+      "parentId": null,
+      "userId": 4,
+      "createdAt": "2026-02-25T11:43:36.907Z"
+    },
+    {
+      "id": 70,
+      "name": "其他收入",
+      "type": "income",
+      "parentId": null,
+      "userId": 4,
+      "createdAt": "2026-02-25T11:43:36.907Z"
+    },
+    {
+      "id": 71,
+      "name": "餐饮",
+      "type": "expense",
+      "parentId": null,
+      "userId": 4,
+      "createdAt": "2026-02-25T11:43:36.907Z"
+    },
+    {
+      "id": 72,
+      "name": "午餐",
+      "type": "expense",
+      "parentId": 71,
+      "userId": 4,
+      "createdAt": "2026-02-25T11:43:36.907Z"
+    },
+    {
+      "id": 73,
+      "name": "晚餐",
+      "type": "expense",
+      "parentId": 71,
+      "userId": 4,
+      "createdAt": "2026-02-25T11:43:36.907Z"
+    },
+    {
+      "id": 74,
+      "name": "外卖",
+      "type": "expense",
+      "parentId": 71,
+      "userId": 4,
+      "createdAt": "2026-02-25T11:43:36.907Z"
+    },
+    {
+      "id": 75,
+      "name": "交通",
+      "type": "expense",
+      "parentId": null,
+      "userId": 4,
+      "createdAt": "2026-02-25T11:43:36.907Z"
+    },
+    {
+      "id": 76,
+      "name": "公交",
+      "type": "expense",
+      "parentId": 75,
+      "userId": 4,
+      "createdAt": "2026-02-25T11:43:36.907Z"
+    },
+    {
+      "id": 77,
+      "name": "地铁",
+      "type": "expense",
+      "parentId": 75,
+      "userId": 4,
+      "createdAt": "2026-02-25T11:43:36.907Z"
+    },
+    {
+      "id": 78,
+      "name": "打车",
+      "type": "expense",
+      "parentId": 75,
+      "userId": 4,
+      "createdAt": "2026-02-25T11:43:36.907Z"
+    },
+    {
+      "id": 79,
+      "name": "购物",
+      "type": "expense",
+      "parentId": null,
+      "userId": 4,
+      "createdAt": "2026-02-25T11:43:36.907Z"
+    },
+    {
+      "id": 80,
+      "name": "服装",
+      "type": "expense",
+      "parentId": 79,
+      "userId": 4,
+      "createdAt": "2026-02-25T11:43:36.907Z"
+    },
+    {
+      "id": 81,
+      "name": "日用品",
+      "type": "expense",
+      "parentId": 79,
+      "userId": 4,
+      "createdAt": "2026-02-25T11:43:36.907Z"
+    },
+    {
+      "id": 82,
+      "name": "娱乐",
+      "type": "expense",
+      "parentId": null,
+      "userId": 4,
+      "createdAt": "2026-02-25T11:43:36.907Z"
+    },
+    {
+      "id": 83,
+      "name": "电影",
+      "type": "expense",
+      "parentId": 82,
+      "userId": 4,
+      "createdAt": "2026-02-25T11:43:36.907Z"
+    },
+    {
+      "id": 84,
+      "name": "游戏",
+      "type": "expense",
+      "parentId": 82,
+      "userId": 4,
+      "createdAt": "2026-02-25T11:43:36.907Z"
+    },
+    {
+      "id": 85,
+      "name": "其他支出",
+      "type": "expense",
+      "parentId": null,
+      "userId": 4,
+      "createdAt": "2026-02-25T11:43:36.907Z"
+    },
+    {
+      "id": 86,
+      "name": "银行卡转账",
+      "type": "transfer",
+      "parentId": null,
+      "userId": 4,
+      "createdAt": "2026-02-25T11:43:36.907Z"
+    },
+    {
+      "id": 87,
+      "name": "支付宝转账",
+      "type": "transfer",
+      "parentId": null,
+      "userId": 4,
+      "createdAt": "2026-02-25T11:43:36.907Z"
+    },
+    {
+      "id": 88,
+      "name": "微信转账",
+      "type": "transfer",
+      "parentId": null,
+      "userId": 4,
+      "createdAt": "2026-02-25T11:43:36.907Z"
+    },
+    {
+      "id": 89,
+      "name": "工资",
+      "type": "income",
+      "parentId": null,
+      "userId": 5,
+      "createdAt": "2026-02-25T11:55:55.956Z"
+    },
+    {
+      "id": 90,
+      "name": "奖金",
+      "type": "income",
+      "parentId": null,
+      "userId": 5,
+      "createdAt": "2026-02-25T11:55:55.956Z"
+    },
+    {
+      "id": 91,
+      "name": "投资收益",
+      "type": "income",
+      "parentId": null,
+      "userId": 5,
+      "createdAt": "2026-02-25T11:55:55.956Z"
+    },
+    {
+      "id": 92,
+      "name": "其他收入",
+      "type": "income",
+      "parentId": null,
+      "userId": 5,
+      "createdAt": "2026-02-25T11:55:55.956Z"
+    },
+    {
+      "id": 93,
+      "name": "餐饮",
+      "type": "expense",
+      "parentId": null,
+      "userId": 5,
+      "createdAt": "2026-02-25T11:55:55.956Z"
+    },
+    {
+      "id": 96,
+      "name": "外卖",
+      "type": "expense",
+      "parentId": 93,
+      "userId": 5,
+      "createdAt": "2026-02-25T11:55:55.956Z"
+    },
+    {
+      "id": 97,
+      "name": "交通",
+      "type": "expense",
+      "parentId": null,
+      "userId": 5,
+      "createdAt": "2026-02-25T11:55:55.956Z"
+    },
+    {
+      "id": 99,
+      "name": "地铁",
+      "type": "expense",
+      "parentId": 97,
+      "userId": 5,
+      "createdAt": "2026-02-25T11:55:55.956Z"
+    },
+    {
+      "id": 101,
+      "name": "购物",
+      "type": "expense",
+      "parentId": null,
+      "userId": 5,
+      "createdAt": "2026-02-25T11:55:55.956Z"
+    },
+    {
+      "id": 102,
+      "name": "服装",
+      "type": "expense",
+      "parentId": 101,
+      "userId": 5,
+      "createdAt": "2026-02-25T11:55:55.956Z"
+    },
+    {
+      "id": 103,
+      "name": "日用品",
+      "type": "expense",
+      "parentId": 101,
+      "userId": 5,
+      "createdAt": "2026-02-25T11:55:55.956Z"
+    },
+    {
+      "id": 104,
+      "name": "娱乐",
+      "type": "expense",
+      "parentId": null,
+      "userId": 5,
+      "createdAt": "2026-02-25T11:55:55.956Z"
+    },
+    {
+      "id": 105,
+      "name": "电影",
+      "type": "expense",
+      "parentId": 104,
+      "userId": 5,
+      "createdAt": "2026-02-25T11:55:55.956Z"
+    },
+    {
+      "id": 106,
+      "name": "游戏",
+      "type": "expense",
+      "parentId": 104,
+      "userId": 5,
+      "createdAt": "2026-02-25T11:55:55.956Z"
+    },
+    {
+      "id": 107,
+      "name": "其他支出",
+      "type": "expense",
+      "parentId": null,
+      "userId": 5,
+      "createdAt": "2026-02-25T11:55:55.956Z"
+    },
+    {
+      "id": 108,
+      "name": "银行卡转账",
+      "type": "transfer",
+      "parentId": null,
+      "userId": 5,
+      "createdAt": "2026-02-25T11:55:55.956Z"
+    },
+    {
+      "id": 109,
+      "name": "支付宝转账",
+      "type": "transfer",
+      "parentId": null,
+      "userId": 5,
+      "createdAt": "2026-02-25T11:55:55.956Z"
+    },
+    {
+      "id": 110,
+      "name": "微信转账",
+      "type": "transfer",
+      "parentId": null,
+      "userId": 5,
+      "createdAt": "2026-02-25T11:55:55.956Z"
+    },
+    {
+      "id": 109,
+      "name": "工资",
+      "type": "income",
+      "parentId": null,
+      "userId": 6,
+      "createdAt": "2026-02-25T11:57:01.667Z"
+    },
+    {
+      "id": 110,
+      "name": "奖金",
+      "type": "income",
+      "parentId": null,
+      "userId": 6,
+      "createdAt": "2026-02-25T11:57:01.667Z"
+    },
+    {
+      "id": 111,
+      "name": "投资收益",
+      "type": "income",
+      "parentId": null,
+      "userId": 6,
+      "createdAt": "2026-02-25T11:57:01.667Z"
+    },
+    {
+      "id": 112,
+      "name": "其他收入",
+      "type": "income",
+      "parentId": null,
+      "userId": 6,
+      "createdAt": "2026-02-25T11:57:01.667Z"
+    },
+    {
+      "id": 113,
+      "name": "餐饮",
+      "type": "expense",
+      "parentId": null,
+      "userId": 6,
+      "createdAt": "2026-02-25T11:57:01.667Z"
+    },
+    {
+      "id": 114,
+      "name": "午餐",
+      "type": "expense",
+      "parentId": 113,
+      "userId": 6,
+      "createdAt": "2026-02-25T11:57:01.667Z"
+    },
+    {
+      "id": 115,
+      "name": "晚餐",
+      "type": "expense",
+      "parentId": 113,
+      "userId": 6,
+      "createdAt": "2026-02-25T11:57:01.667Z"
+    },
+    {
+      "id": 116,
+      "name": "外卖",
+      "type": "expense",
+      "parentId": 113,
+      "userId": 6,
+      "createdAt": "2026-02-25T11:57:01.667Z"
+    },
+    {
+      "id": 117,
+      "name": "交通",
+      "type": "expense",
+      "parentId": null,
+      "userId": 6,
+      "createdAt": "2026-02-25T11:57:01.667Z"
+    },
+    {
+      "id": 118,
+      "name": "公交",
+      "type": "expense",
+      "parentId": 117,
+      "userId": 6,
+      "createdAt": "2026-02-25T11:57:01.667Z"
+    },
+    {
+      "id": 119,
+      "name": "地铁",
+      "type": "expense",
+      "parentId": 117,
+      "userId": 6,
+      "createdAt": "2026-02-25T11:57:01.667Z"
+    },
+    {
+      "id": 120,
+      "name": "打车",
+      "type": "expense",
+      "parentId": 117,
+      "userId": 6,
+      "createdAt": "2026-02-25T11:57:01.667Z"
+    },
+    {
+      "id": 121,
+      "name": "购物",
+      "type": "expense",
+      "parentId": null,
+      "userId": 6,
+      "createdAt": "2026-02-25T11:57:01.667Z"
+    },
+    {
+      "id": 122,
+      "name": "服装",
+      "type": "expense",
+      "parentId": 121,
+      "userId": 6,
+      "createdAt": "2026-02-25T11:57:01.667Z"
+    },
+    {
+      "id": 123,
+      "name": "日用品",
+      "type": "expense",
+      "parentId": 121,
+      "userId": 6,
+      "createdAt": "2026-02-25T11:57:01.667Z"
+    },
+    {
+      "id": 124,
+      "name": "娱乐",
+      "type": "expense",
+      "parentId": null,
+      "userId": 6,
+      "createdAt": "2026-02-25T11:57:01.667Z"
+    },
+    {
+      "id": 125,
+      "name": "电影",
+      "type": "expense",
+      "parentId": 124,
+      "userId": 6,
+      "createdAt": "2026-02-25T11:57:01.667Z"
+    },
+    {
+      "id": 126,
+      "name": "游戏",
+      "type": "expense",
+      "parentId": 124,
+      "userId": 6,
+      "createdAt": "2026-02-25T11:57:01.667Z"
+    },
+    {
+      "id": 127,
+      "name": "其他支出",
+      "type": "expense",
+      "parentId": null,
+      "userId": 6,
+      "createdAt": "2026-02-25T11:57:01.667Z"
+    },
+    {
+      "id": 128,
+      "name": "银行卡转账",
+      "type": "transfer",
+      "parentId": null,
+      "userId": 6,
+      "createdAt": "2026-02-25T11:57:01.667Z"
+    },
+    {
+      "id": 129,
+      "name": "支付宝转账",
+      "type": "transfer",
+      "parentId": null,
+      "userId": 6,
+      "createdAt": "2026-02-25T11:57:01.667Z"
+    },
+    {
+      "id": 130,
+      "name": "微信转账",
+      "type": "transfer",
+      "parentId": null,
+      "userId": 6,
+      "createdAt": "2026-02-25T11:57:01.667Z"
+    },
+    {
+      "id": 129,
+      "name": "生活",
+      "type": "expense",
+      "parentId": null,
+      "userId": 5,
+      "createdAt": "2026-02-25T12:18:03.034Z"
+    },
+    {
+      "id": 130,
+      "name": "电费",
+      "type": "expense",
+      "parentId": 129,
+      "userId": 5,
+      "createdAt": "2026-02-25T12:18:20.113Z"
+    }
+  ],
+  "paymentMethods": [
+    {
+      "id": 1,
+      "name": "现金",
+      "userId": 1,
+      "createdAt": "2026-02-25T11:26:11.617Z"
+    },
+    {
+      "id": 2,
+      "name": "信用卡",
+      "userId": 1,
+      "createdAt": "2026-02-25T11:26:11.617Z"
+    },
+    {
+      "id": 3,
+      "name": "支付宝",
+      "userId": 1,
+      "createdAt": "2026-02-25T11:26:11.617Z"
+    },
+    {
+      "id": 4,
+      "name": "微信",
+      "userId": 1,
+      "createdAt": "2026-02-25T11:26:11.617Z"
+    },
+    {
+      "id": 5,
+      "name": "银行卡",
+      "userId": 1,
+      "createdAt": "2026-02-25T11:26:11.617Z"
+    },
+    {
+      "id": 6,
+      "name": "现金",
+      "userId": 2,
+      "createdAt": "2026-02-25T11:30:04.007Z"
+    },
+    {
+      "id": 7,
+      "name": "信用卡",
+      "userId": 2,
+      "createdAt": "2026-02-25T11:30:04.007Z"
+    },
+    {
+      "id": 8,
+      "name": "支付宝",
+      "userId": 2,
+      "createdAt": "2026-02-25T11:30:04.007Z"
+    },
+    {
+      "id": 9,
+      "name": "微信",
+      "userId": 2,
+      "createdAt": "2026-02-25T11:30:04.007Z"
+    },
+    {
+      "id": 10,
+      "name": "银行卡",
+      "userId": 2,
+      "createdAt": "2026-02-25T11:30:04.007Z"
+    },
+    {
+      "id": 11,
+      "name": "现金",
+      "userId": 3,
+      "createdAt": "2026-02-25T11:41:14.648Z"
+    },
+    {
+      "id": 12,
+      "name": "信用卡",
+      "userId": 3,
+      "createdAt": "2026-02-25T11:41:14.648Z"
+    },
+    {
+      "id": 13,
+      "name": "支付宝",
+      "userId": 3,
+      "createdAt": "2026-02-25T11:41:14.648Z"
+    },
+    {
+      "id": 14,
+      "name": "微信",
+      "userId": 3,
+      "createdAt": "2026-02-25T11:41:14.648Z"
+    },
+    {
+      "id": 15,
+      "name": "银行卡",
+      "userId": 3,
+      "createdAt": "2026-02-25T11:41:14.648Z"
+    },
+    {
+      "id": 16,
+      "name": "现金",
+      "userId": 4,
+      "createdAt": "2026-02-25T11:43:36.911Z"
+    },
+    {
+      "id": 17,
+      "name": "信用卡",
+      "userId": 4,
+      "createdAt": "2026-02-25T11:43:36.911Z"
+    },
+    {
+      "id": 18,
+      "name": "支付宝",
+      "userId": 4,
+      "createdAt": "2026-02-25T11:43:36.911Z"
+    },
+    {
+      "id": 19,
+      "name": "微信",
+      "userId": 4,
+      "createdAt": "2026-02-25T11:43:36.911Z"
+    },
+    {
+      "id": 20,
+      "name": "银行卡",
+      "userId": 4,
+      "createdAt": "2026-02-25T11:43:36.911Z"
+    },
+    {
+      "id": 21,
+      "name": "现金",
+      "userId": 5,
+      "createdAt": "2026-02-25T11:55:55.961Z"
+    },
+    {
+      "id": 22,
+      "name": "信用卡",
+      "userId": 5,
+      "createdAt": "2026-02-25T11:55:55.961Z"
+    },
+    {
+      "id": 23,
+      "name": "支付宝",
+      "userId": 5,
+      "createdAt": "2026-02-25T11:55:55.961Z"
+    },
+    {
+      "id": 24,
+      "name": "微信",
+      "userId": 5,
+      "createdAt": "2026-02-25T11:55:55.961Z"
+    },
+    {
+      "id": 25,
+      "name": "银行卡",
+      "userId": 5,
+      "createdAt": "2026-02-25T11:55:55.961Z"
+    },
+    {
+      "id": 26,
+      "name": "现金",
+      "userId": 6,
+      "createdAt": "2026-02-25T11:57:01.670Z"
+    },
+    {
+      "id": 27,
+      "name": "信用卡",
+      "userId": 6,
+      "createdAt": "2026-02-25T11:57:01.670Z"
+    },
+    {
+      "id": 28,
+      "name": "支付宝",
+      "userId": 6,
+      "createdAt": "2026-02-25T11:57:01.670Z"
+    },
+    {
+      "id": 29,
+      "name": "微信",
+      "userId": 6,
+      "createdAt": "2026-02-25T11:57:01.670Z"
+    },
+    {
+      "id": 30,
+      "name": "银行卡",
+      "userId": 6,
+      "createdAt": "2026-02-25T11:57:01.670Z"
+    }
+  ],
+  "records": [
+    {
+      "id": 1,
+      "type": "expense",
+      "amount": 99,
+      "categoryId": 96,
+      "paymentMethodId": 23,
+      "date": "2026-02-25T00:00:00.000Z",
+      "remark": null,
+      "userId": 5,
+      "createdAt": "2026-02-25T11:57:45.040Z"
+    },
+    {
+      "id": 2,
+      "type": "income",
+      "amount": 999,
+      "categoryId": 89,
+      "paymentMethodId": 21,
+      "date": "2026-02-25T00:00:00.000Z",
+      "remark": null,
+      "userId": 5,
+      "createdAt": "2026-02-25T11:58:33.437Z"
+    },
+    {
+      "id": 3,
+      "type": "income",
+      "amount": 324,
+      "categoryId": 89,
+      "paymentMethodId": 21,
+      "date": "2026-02-25T00:00:00.000Z",
+      "remark": null,
+      "userId": 5,
+      "createdAt": "2026-02-25T12:00:23.494Z"
+    },
+    {
+      "id": 4,
+      "type": "income",
+      "amount": 545,
+      "categoryId": 89,
+      "paymentMethodId": 21,
+      "date": "2026-02-25T00:00:00.000Z",
+      "remark": null,
+      "userId": 5,
+      "createdAt": "2026-02-25T12:00:40.163Z"
+    },
+    {
+      "id": 5,
+      "type": "income",
+      "amount": 7667,
+      "categoryId": 89,
+      "paymentMethodId": 21,
+      "date": "2026-02-25T00:00:00.000Z",
+      "remark": null,
+      "userId": 5,
+      "createdAt": "2026-02-25T12:00:53.233Z"
+    },
+    {
+      "id": 6,
+      "type": "income",
+      "amount": 5454456,
+      "categoryId": 89,
+      "paymentMethodId": 21,
+      "date": "2026-02-25T00:00:00.000Z",
+      "remark": null,
+      "userId": 5,
+      "createdAt": "2026-02-25T12:01:02.218Z"
+    },
+    {
+      "id": 7,
+      "type": "income",
+      "amount": 323432,
+      "categoryId": 89,
+      "paymentMethodId": 21,
+      "date": "2026-02-25T00:00:00.000Z",
+      "remark": null,
+      "userId": 5,
+      "createdAt": "2026-02-25T12:01:11.006Z"
+    },
+    {
+      "id": 8,
+      "type": "income",
+      "amount": 67867,
+      "categoryId": 89,
+      "paymentMethodId": 21,
+      "date": "2026-02-25T00:00:00.000Z",
+      "remark": null,
+      "userId": 5,
+      "createdAt": "2026-02-25T12:01:22.846Z"
+    },
+    {
+      "id": 9,
+      "type": "income",
+      "amount": 3443,
+      "categoryId": 89,
+      "paymentMethodId": 21,
+      "date": "2026-02-25T00:00:00.000Z",
+      "remark": null,
+      "userId": 5,
+      "createdAt": "2026-02-25T12:01:42.763Z"
+    },
+    {
+      "id": 10,
+      "type": "income",
+      "amount": 3443,
+      "categoryId": 89,
+      "paymentMethodId": 21,
+      "date": "2026-02-25T00:00:00.000Z",
+      "remark": null,
+      "userId": 5,
+      "createdAt": "2026-02-25T12:01:50.523Z"
+    },
+    {
+      "id": 11,
+      "type": "income",
+      "amount": 3443,
+      "categoryId": 89,
+      "paymentMethodId": 21,
+      "date": "2026-02-25T00:00:00.000Z",
+      "remark": null,
+      "userId": 5,
+      "createdAt": "2026-02-25T12:01:56.963Z"
+    },
+    {
+      "id": 12,
+      "type": "income",
+      "amount": 2332,
+      "categoryId": 89,
+      "paymentMethodId": 21,
+      "date": "2026-02-25T00:00:00.000Z",
+      "remark": null,
+      "userId": 5,
+      "createdAt": "2026-02-25T12:04:30.817Z"
+    },
+    {
+      "id": 13,
+      "type": "income",
+      "amount": 2332,
+      "categoryId": 89,
+      "paymentMethodId": 21,
+      "date": "2026-02-25T00:00:00.000Z",
+      "remark": null,
+      "userId": 5,
+      "createdAt": "2026-02-25T12:04:37.877Z"
+    },
+    {
+      "id": 14,
+      "type": "income",
+      "amount": 2332,
+      "categoryId": 89,
+      "paymentMethodId": 21,
+      "date": "2026-02-25T00:00:00.000Z",
+      "remark": null,
+      "userId": 5,
+      "createdAt": "2026-02-25T12:04:44.832Z"
+    },
+    {
+      "id": 15,
+      "type": "income",
+      "amount": 2332,
+      "categoryId": 89,
+      "paymentMethodId": 21,
+      "date": "2026-02-25T00:00:00.000Z",
+      "remark": null,
+      "userId": 5,
+      "createdAt": "2026-02-25T12:05:05.651Z"
+    },
+    {
+      "id": 16,
+      "type": "income",
+      "amount": 2332,
+      "categoryId": 89,
+      "paymentMethodId": 21,
+      "date": "2026-02-25T00:00:00.000Z",
+      "remark": null,
+      "userId": 5,
+      "createdAt": "2026-02-25T12:05:19.848Z"
+    },
+    {
+      "id": 17,
+      "type": "income",
+      "amount": 2332,
+      "categoryId": 89,
+      "paymentMethodId": 21,
+      "date": "2026-02-25T00:00:00.000Z",
+      "remark": null,
+      "userId": 5,
+      "createdAt": "2026-02-25T12:05:31.564Z"
+    },
+    {
+      "id": 18,
+      "type": "income",
+      "amount": 2332,
+      "categoryId": 89,
+      "paymentMethodId": 21,
+      "date": "2026-02-25T00:00:00.000Z",
+      "remark": null,
+      "userId": 5,
+      "createdAt": "2026-02-25T12:05:39.113Z"
+    },
+    {
+      "id": 19,
+      "type": "income",
+      "amount": 2332,
+      "categoryId": 90,
+      "paymentMethodId": 21,
+      "date": "2026-02-25T00:00:00.000Z",
+      "remark": null,
+      "userId": 5,
+      "createdAt": "2026-02-25T12:05:50.121Z"
+    },
+    {
+      "id": 20,
+      "type": "income",
+      "amount": 2332,
+      "categoryId": 89,
+      "paymentMethodId": 21,
+      "date": "2026-02-25T00:00:00.000Z",
+      "remark": null,
+      "userId": 5,
+      "createdAt": "2026-02-25T12:05:56.852Z"
+    },
+    {
+      "id": 21,
+      "type": "income",
+      "amount": 2332,
+      "categoryId": 89,
+      "paymentMethodId": 21,
+      "date": "2026-02-25T00:00:00.000Z",
+      "remark": null,
+      "userId": 5,
+      "createdAt": "2026-02-25T12:06:02.556Z"
+    },
+    {
+      "id": 22,
+      "type": "income",
+      "amount": 9999,
+      "categoryId": 89,
+      "paymentMethodId": 21,
+      "date": "2026-02-25T00:00:00.000Z",
+      "remark": null,
+      "userId": 5,
+      "createdAt": "2026-02-25T12:06:57.778Z"
+    },
+    {
+      "id": 23,
+      "type": "expense",
+      "amount": 2332,
+      "categoryId": 89,
+      "paymentMethodId": 22,
+      "date": "2026-02-25T00:00:00.000Z",
+      "remark": null,
+      "userId": 5,
+      "createdAt": "2026-02-25T12:07:36.881Z"
+    },
+    {
+      "id": 24,
+      "type": "expense",
+      "amount": 2332,
+      "categoryId": 96,
+      "paymentMethodId": 23,
+      "date": "2026-02-25T00:00:00.000Z",
+      "remark": null,
+      "userId": 5,
+      "createdAt": "2026-02-25T12:07:51.053Z"
+    },
+    {
+      "id": 25,
+      "type": "expense",
+      "amount": 2332,
+      "categoryId": 96,
+      "paymentMethodId": 23,
+      "date": "2026-02-25T00:00:00.000Z",
+      "remark": null,
+      "userId": 5,
+      "createdAt": "2026-02-25T12:07:59.797Z"
+    },
+    {
+      "id": 26,
+      "type": "expense",
+      "amount": 2332,
+      "categoryId": 98,
+      "paymentMethodId": 23,
+      "date": "2026-02-25T00:00:00.000Z",
+      "remark": null,
+      "userId": 5,
+      "createdAt": "2026-02-25T12:08:09.059Z"
+    },
+    {
+      "id": 27,
+      "type": "expense",
+      "amount": 2332,
+      "categoryId": 97,
+      "paymentMethodId": 23,
+      "date": "2026-02-25T00:00:00.000Z",
+      "remark": null,
+      "userId": 5,
+      "createdAt": "2026-02-25T12:08:26.308Z"
+    },
+    {
+      "id": 28,
+      "type": "expense",
+      "amount": 2332,
+      "categoryId": 98,
+      "paymentMethodId": 22,
+      "date": "2026-02-25T00:00:00.000Z",
+      "remark": null,
+      "userId": 5,
+      "createdAt": "2026-02-25T12:08:35.269Z"
+    },
+    {
+      "id": 29,
+      "type": "income",
+      "amount": 2332,
+      "categoryId": 102,
+      "paymentMethodId": 23,
+      "date": "2026-02-25T00:00:00.000Z",
+      "remark": null,
+      "userId": 5,
+      "createdAt": "2026-02-25T12:08:43.518Z"
+    },
+    {
+      "id": 30,
+      "type": "expense",
+      "amount": 2332,
+      "categoryId": 101,
+      "paymentMethodId": 24,
+      "date": "2026-02-25T00:00:00.000Z",
+      "remark": null,
+      "userId": 5,
+      "createdAt": "2026-02-25T12:08:50.889Z"
+    },
+    {
+      "id": 31,
+      "type": "expense",
+      "amount": 2332,
+      "categoryId": 100,
+      "paymentMethodId": 24,
+      "date": "2026-02-25T00:00:00.000Z",
+      "remark": null,
+      "userId": 5,
+      "createdAt": "2026-02-25T12:08:59.877Z"
+    },
+    {
+      "id": 32,
+      "type": "expense",
+      "amount": 2332,
+      "categoryId": 105,
+      "paymentMethodId": 23,
+      "date": "2026-02-25T00:00:00.000Z",
+      "remark": null,
+      "userId": 5,
+      "createdAt": "2026-02-25T12:09:09.550Z"
+    },
+    {
+      "id": 33,
+      "type": "expense",
+      "amount": 2332,
+      "categoryId": 103,
+      "paymentMethodId": 23,
+      "date": "2026-02-25T00:00:00.000Z",
+      "remark": null,
+      "userId": 5,
+      "createdAt": "2026-02-25T12:09:16.875Z"
+    },
+    {
+      "id": 34,
+      "type": "expense",
+      "amount": 2332,
+      "categoryId": 101,
+      "paymentMethodId": 24,
+      "date": "2026-02-25T00:00:00.000Z",
+      "remark": null,
+      "userId": 5,
+      "createdAt": "2026-02-25T12:09:25.274Z"
+    },
+    {
+      "id": 35,
+      "type": "expense",
+      "amount": 2332,
+      "categoryId": 100,
+      "paymentMethodId": 23,
+      "date": "2026-02-25T00:00:00.000Z",
+      "remark": null,
+      "userId": 5,
+      "createdAt": "2026-02-25T12:09:31.578Z"
+    },
+    {
+      "id": 36,
+      "type": "expense",
+      "amount": 2332,
+      "categoryId": 99,
+      "paymentMethodId": 24,
+      "date": "2026-02-25T00:00:00.000Z",
+      "remark": null,
+      "userId": 5,
+      "createdAt": "2026-02-25T12:09:44.696Z"
+    },
+    {
+      "id": 37,
+      "type": "expense",
+      "amount": 2332,
+      "categoryId": 101,
+      "paymentMethodId": 24,
+      "date": "2026-02-25T00:00:00.000Z",
+      "remark": null,
+      "userId": 5,
+      "createdAt": "2026-02-25T12:09:58.371Z"
+    },
+    {
+      "id": 38,
+      "type": "expense",
+      "amount": 2332,
+      "categoryId": 101,
+      "paymentMethodId": 24,
+      "date": "2026-02-25T00:00:00.000Z",
+      "remark": null,
+      "userId": 5,
+      "createdAt": "2026-02-25T12:10:10.684Z"
+    },
+    {
+      "id": 39,
+      "type": "expense",
+      "amount": 2332,
+      "categoryId": 99,
+      "paymentMethodId": 24,
+      "date": "2026-02-25T00:00:00.000Z",
+      "remark": null,
+      "userId": 5,
+      "createdAt": "2026-02-25T12:10:18.142Z"
+    },
+    {
+      "id": 40,
+      "type": "expense",
+      "amount": 2332,
+      "categoryId": 103,
+      "paymentMethodId": 25,
+      "date": "2026-02-25T00:00:00.000Z",
+      "remark": null,
+      "userId": 5,
+      "createdAt": "2026-02-25T12:10:24.870Z"
+    },
+    {
+      "id": 41,
+      "type": "expense",
+      "amount": 2332,
+      "categoryId": 100,
+      "paymentMethodId": 24,
+      "date": "2026-02-25T00:00:00.000Z",
+      "remark": null,
+      "userId": 5,
+      "createdAt": "2026-02-25T12:10:32.313Z"
+    },
+    {
+      "id": 42,
+      "type": "expense",
+      "amount": 2332,
+      "categoryId": 100,
+      "paymentMethodId": 24,
+      "date": "2026-02-25T00:00:00.000Z",
+      "remark": null,
+      "userId": 5,
+      "createdAt": "2026-02-25T12:11:00.336Z"
+    },
+    {
+      "id": 43,
+      "type": "expense",
+      "amount": 2332,
+      "categoryId": 100,
+      "paymentMethodId": 23,
+      "date": "2026-02-25T00:00:00.000Z",
+      "remark": null,
+      "userId": 5,
+      "createdAt": "2026-02-25T12:11:07.251Z"
+    },
+    {
+      "id": 44,
+      "type": "income",
+      "amount": 548456546564,
+      "categoryId": 89,
+      "paymentMethodId": 21,
+      "date": "2026-02-25T12:14:00.000Z",
+      "remark": null,
+      "userId": 5,
+      "createdAt": "2026-02-25T12:14:34.377Z"
+    }
+  ]
+}

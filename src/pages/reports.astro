@@ -77,90 +77,98 @@ import Layout from '../layouts/Layout.astro';
   </div>
   
   <script>
-    // 获取分类名称映射
-    const categoryMap = {
-      1: '工资',
-      2: '奖金',
-      3: '投资收益',
-      4: '其他收入',
-      5: '餐饮',
-      9: '交通',
-      13: '购物',
-      16: '娱乐',
-      19: '其他支出',
-      20: '银行卡转账',
-      21: '支付宝转账',
-      22: '微信转账'
-    };
-    
-    // 获取支付方式名称映射
-    const paymentMap = {
-      1: '现金',
-      2: '信用卡',
-      3: '支付宝',
-      4: '微信',
-      5: '银行卡'
-    };
+    // 获取用户信息
+    async function getUserInfo() {
+      try {
+        const response = await fetch('/api/auth/me');
+        if (response.ok) {
+          const data = await response.json();
+          if (data.success) {
+            return data.user;
+          }
+        }
+        // 未登录，跳转到登录页面
+        window.location.href = '/login';
+      } catch (error) {
+        console.error('获取用户信息失败:', error);
+        alert('获取用户信息失败，请重新登录');
+        window.location.href = '/login';
+      }
+    }
     
     // 加载报表数据
-    function loadReportData() {
-      const transactions = JSON.parse(localStorage.getItem('transactions') || '[]');
-      const timeRange = document.getElementById('time-range').value;
-      
-      console.log('加载报表数据，时间范围：', timeRange);
-      console.log('交易记录数量：', transactions.length);
-      
-      // 更新图表显示
-      document.getElementById('income-expense-trend').textContent = '加载中...';
-      document.getElementById('income-expense-comparison').textContent = '加载中...';
-      document.getElementById('expense-category-analysis').textContent = '加载中...';
-      document.getElementById('income-source-analysis').textContent = '加载中...';
-      document.getElementById('payment-method-analysis').textContent = '加载中...';
-      document.getElementById('savings-rate-trend').textContent = '加载中...';
-      
-      // 模拟数据加载延迟
-      setTimeout(() => {
-        // 计算收支数据
-        let totalIncome = 0;
-        let totalExpense = 0;
-        const categoryExpenses = {};
-        const incomeSources = {};
-        const paymentMethods = {};
+    async function loadReportData() {
+      try {
+        // 确保用户已登录
+        await getUserInfo();
         
-        transactions.forEach(transaction => {
-          if (transaction.type === 'income') {
-            totalIncome += transaction.amount;
-            // 统计收入来源
-            const categoryName = categoryMap[transaction.category_id] || '未知分类';
-            incomeSources[categoryName] = (incomeSources[categoryName] || 0) + transaction.amount;
-          } else if (transaction.type === 'expense') {
-            totalExpense += transaction.amount;
-            // 统计支出分类
-            const categoryName = categoryMap[transaction.category_id] || '未知分类';
-            categoryExpenses[categoryName] = (categoryExpenses[categoryName] || 0) + transaction.amount;
-          }
-          
-          // 统计支付方式
-          const paymentName = paymentMap[transaction.payment_method_id] || '未知支付方式';
-          paymentMethods[paymentName] = (paymentMethods[paymentName] || 0) + transaction.amount;
-        });
+        const timeRange = document.getElementById('time-range').value;
+        
+        console.log('加载报表数据，时间范围：', timeRange);
         
         // 更新图表显示
-        document.getElementById('income-expense-trend').textContent = `本月收入: ¥${totalIncome.toFixed(2)}, 本月支出: ¥${totalExpense.toFixed(2)}`;
-        document.getElementById('income-expense-comparison').textContent = `结余: ¥${(totalIncome - totalExpense).toFixed(2)}`;
-        document.getElementById('expense-category-analysis').textContent = `支出分类: ${Object.keys(categoryExpenses).length} 个`;
-        document.getElementById('income-source-analysis').textContent = `收入来源: ${Object.keys(incomeSources).length} 个`;
-        document.getElementById('payment-method-analysis').textContent = `支付方式: ${Object.keys(paymentMethods).length} 种`;
-        document.getElementById('savings-rate-trend').textContent = `储蓄率: ${totalIncome > 0 ? ((totalIncome - totalExpense) / totalIncome * 100).toFixed(1) : 0}%`;
+        document.getElementById('income-expense-trend').textContent = '加载中...';
+        document.getElementById('income-expense-comparison').textContent = '加载中...';
+        document.getElementById('expense-category-analysis').textContent = '加载中...';
+        document.getElementById('income-source-analysis').textContent = '加载中...';
+        document.getElementById('payment-method-analysis').textContent = '加载中...';
+        document.getElementById('savings-rate-trend').textContent = '加载中...';
         
-        console.log('报表数据加载完成');
-      }, 500);
+        // 获取交易记录
+        const response = await fetch('/api/records');
+        const data = await response.json();
+        
+        if (data.success) {
+          const transactions = data.records;
+          console.log('交易记录数量：', transactions.length);
+          
+          // 计算收支数据
+          let totalIncome = 0;
+          let totalExpense = 0;
+          const categoryExpenses = {};
+          const incomeSources = {};
+          const paymentMethods = {};
+          
+          transactions.forEach(transaction => {
+            if (transaction.type === 'income') {
+              totalIncome += transaction.amount;
+              // 统计收入来源
+              const categoryName = transaction.categoryName || '未知分类';
+              incomeSources[categoryName] = (incomeSources[categoryName] || 0) + transaction.amount;
+            } else if (transaction.type === 'expense') {
+              totalExpense += transaction.amount;
+              // 统计支出分类
+              const categoryName = transaction.categoryName || '未知分类';
+              categoryExpenses[categoryName] = (categoryExpenses[categoryName] || 0) + transaction.amount;
+            }
+            
+            // 统计支付方式
+            const paymentName = transaction.paymentMethodName || '未知支付方式';
+            paymentMethods[paymentName] = (paymentMethods[paymentName] || 0) + transaction.amount;
+          });
+          
+          // 更新图表显示
+          document.getElementById('income-expense-trend').textContent = `本月收入: ¥${totalIncome.toFixed(2)}, 本月支出: ¥${totalExpense.toFixed(2)}`;
+          document.getElementById('income-expense-comparison').textContent = `结余: ¥${(totalIncome - totalExpense).toFixed(2)}`;
+          document.getElementById('expense-category-analysis').textContent = `支出分类: ${Object.keys(categoryExpenses).length} 个`;
+          document.getElementById('income-source-analysis').textContent = `收入来源: ${Object.keys(incomeSources).length} 个`;
+          document.getElementById('payment-method-analysis').textContent = `支付方式: ${Object.keys(paymentMethods).length} 种`;
+          document.getElementById('savings-rate-trend').textContent = `储蓄率: ${totalIncome > 0 ? ((totalIncome - totalExpense) / totalIncome * 100).toFixed(1) : 0}%`;
+          
+          console.log('报表数据加载完成');
+        }
+      } catch (error) {
+        console.error('加载报表数据失败:', error);
+        alert('加载报表数据失败，请重试');
+      }
     }
     
     // 页面加载完成后执行
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', async function() {
+      // 确保用户已登录
+      await getUserInfo();
       // 加载初始数据
-      loadReportData();
+      await loadReportData();
       
       // 添加时间范围变更事件
       document.getElementById('time-range').addEventListener('change', loadReportData);

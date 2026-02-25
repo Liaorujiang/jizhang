@@ -40,20 +40,32 @@ import '../styles/global.css';
   
   <script>
     // 检查登录状态并更新导航栏
-    function updateLoginState() {
-      const user = localStorage.getItem('user');
-      const loginState = document.getElementById('login-state');
-      const registerState = document.getElementById('register-state');
-      const userState = document.getElementById('user-state');
-      const userName = document.getElementById('user-name');
-      
-      if (user) {
-        const userData = JSON.parse(user);
-        userName.textContent = userData.name;
-        loginState.classList.add('hidden');
-        registerState.classList.add('hidden');
-        userState.classList.remove('hidden');
-      } else {
+    async function updateLoginState() {
+      try {
+        const response = await fetch('/api/auth/me');
+        const data = await response.json();
+        
+        const loginState = document.getElementById('login-state');
+        const registerState = document.getElementById('register-state');
+        const userState = document.getElementById('user-state');
+        const userName = document.getElementById('user-name');
+        
+        if (data.success) {
+          userName.textContent = data.user.username || data.user.email;
+          loginState.classList.add('hidden');
+          registerState.classList.add('hidden');
+          userState.classList.remove('hidden');
+        } else {
+          loginState.classList.remove('hidden');
+          registerState.classList.remove('hidden');
+          userState.classList.add('hidden');
+        }
+      } catch (error) {
+        console.error('更新登录状态错误:', error);
+        // 错误时默认显示登录按钮
+        const loginState = document.getElementById('login-state');
+        const registerState = document.getElementById('register-state');
+        const userState = document.getElementById('user-state');
         loginState.classList.remove('hidden');
         registerState.classList.remove('hidden');
         userState.classList.add('hidden');
@@ -62,22 +74,44 @@ import '../styles/global.css';
     
     // 处理退出登录
     function handleLogout() {
-      localStorage.removeItem('user');
+      // 清除 cookies
+      document.cookie = 'session=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+      document.cookie = 'user=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
       updateLoginState();
       window.location.href = '/';
     }
     
     // 检查登录状态并进行页面保护
-    function checkLoginStatus() {
-      const user = localStorage.getItem('user');
-      const currentPath = window.location.pathname;
-      
-      // 登录和注册页面不需要登录
-      const excludedPaths = ['/login', '/register'];
-      
-      if (!user && !excludedPaths.includes(currentPath)) {
-        // 未登录且不在排除路径，跳转到登录页面
-        window.location.href = '/login';
+    async function checkLoginStatus() {
+      try {
+        const response = await fetch('/api/auth/me');
+        const data = await response.json();
+        
+        let currentPath = window.location.pathname;
+        
+        // 移除 trailing slash，确保路径匹配
+        if (currentPath.endsWith('/') && currentPath.length > 1) {
+          currentPath = currentPath.slice(0, -1);
+        }
+        
+        // 登录和注册页面不需要登录
+        const excludedPaths = ['/login', '/register'];
+        
+        if (!data.success && !excludedPaths.includes(currentPath)) {
+          // 未登录且不在排除路径，跳转到登录页面
+          window.location.href = '/login';
+        }
+      } catch (error) {
+        console.error('检查登录状态错误:', error);
+        // 错误时默认跳转到登录页面
+        let currentPath = window.location.pathname;
+        if (currentPath.endsWith('/') && currentPath.length > 1) {
+          currentPath = currentPath.slice(0, -1);
+        }
+        const excludedPaths = ['/login', '/register'];
+        if (!excludedPaths.includes(currentPath)) {
+          window.location.href = '/login';
+        }
       }
     }
     
