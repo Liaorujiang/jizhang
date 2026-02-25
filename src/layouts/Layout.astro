@@ -84,9 +84,7 @@ import '../styles/global.css';
     // 检查登录状态并进行页面保护
     async function checkLoginStatus() {
       try {
-        const response = await fetch('/api/auth/me');
-        const data = await response.json();
-        
+        // 获取当前路径
         let currentPath = window.location.pathname;
         
         // 移除 trailing slash，确保路径匹配
@@ -97,8 +95,17 @@ import '../styles/global.css';
         // 登录和注册页面不需要登录
         const excludedPaths = ['/login', '/register'];
         
-        if (!data.success && !excludedPaths.includes(currentPath)) {
-          // 未登录且不在排除路径，跳转到登录页面
+        // 如果是登录或注册页面，直接返回
+        if (excludedPaths.includes(currentPath)) {
+          return;
+        }
+        
+        // 调用 API 端点检查登录状态
+        const response = await fetch('/api/auth/me');
+        const data = await response.json();
+        
+        if (!data.success) {
+          // 未登录，跳转到登录页面
           window.location.href = '/login';
         }
       } catch (error) {
@@ -116,9 +123,9 @@ import '../styles/global.css';
     }
     
     // 页面加载完成后执行
-    document.addEventListener('DOMContentLoaded', function() {
-      checkLoginStatus();
-      updateLoginState();
+    document.addEventListener('DOMContentLoaded', async function() {
+      await checkLoginStatus();
+      await updateLoginState();
       
       const logoutBtn = document.getElementById('logout-btn');
       if (logoutBtn) {

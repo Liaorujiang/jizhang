@@ -33,7 +33,7 @@ export const POST: APIRoute = async ({ request, cookies }) => {
     }
 
     // 生成会话ID
-    const sessionId = crypto.randomUUID();
+    const sessionId = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
 
     // 保存会话到 cookies
     cookies.set('session', sessionId, {
