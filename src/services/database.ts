@@ -225,124 +225,181 @@ function createMockDB() {
 
 // 初始化数据库表结构
 async function initDatabase() {
-  const db = getDB();
-  
-  // 创建用户表
-  await db.exec(`
-    CREATE TABLE IF NOT EXISTS users (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      username TEXT NOT NULL,
-      password TEXT NOT NULL,
-      email TEXT UNIQUE NOT NULL,
-      createdAt TEXT NOT NULL
-    );
-  `);
-  
-  // 创建分类表
-  await db.exec(`
-    CREATE TABLE IF NOT EXISTS categories (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      name TEXT NOT NULL,
-      type TEXT NOT NULL,
-      parentId INTEGER NULL,
-      userId INTEGER NOT NULL,
-      createdAt TEXT NOT NULL,
-      FOREIGN KEY (userId) REFERENCES users(id)
-    );
-  `);
-  
-  // 创建支付方式表
-  await db.exec(`
-    CREATE TABLE IF NOT EXISTS paymentMethods (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      name TEXT NOT NULL,
-      userId INTEGER NOT NULL,
-      createdAt TEXT NOT NULL,
-      FOREIGN KEY (userId) REFERENCES users(id)
-    );
-  `);
-  
-  // 创建记录表
-  await db.exec(`
-    CREATE TABLE IF NOT EXISTS records (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      type TEXT NOT NULL,
-      amount REAL NOT NULL,
-      categoryId INTEGER NOT NULL,
-      paymentMethodId INTEGER NULL,
-      date TEXT NOT NULL,
-      remark TEXT NULL,
-      userId INTEGER NOT NULL,
-      createdAt TEXT NOT NULL,
-      FOREIGN KEY (userId) REFERENCES users(id),
-      FOREIGN KEY (categoryId) REFERENCES categories(id),
-      FOREIGN KEY (paymentMethodId) REFERENCES paymentMethods(id)
-    );
-  `);
+  try {
+    console.log('=== Initializing Database ===');
+    const db = getDB();
+    console.log('✓ Database instance obtained');
+    
+    // 创建用户表
+    console.log('Creating users table...');
+    await db.exec(`
+      CREATE TABLE IF NOT EXISTS users (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        username TEXT NOT NULL,
+        password TEXT NOT NULL,
+        email TEXT UNIQUE NOT NULL,
+        createdAt TEXT NOT NULL
+      );
+    `);
+    console.log('✓ Users table created');
+    
+    // 创建分类表
+    console.log('Creating categories table...');
+    await db.exec(`
+      CREATE TABLE IF NOT EXISTS categories (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT NOT NULL,
+        type TEXT NOT NULL,
+        parentId INTEGER NULL,
+        userId INTEGER NOT NULL,
+        createdAt TEXT NOT NULL,
+        FOREIGN KEY (userId) REFERENCES users(id)
+      );
+    `);
+    console.log('✓ Categories table created');
+    
+    // 创建支付方式表
+    console.log('Creating paymentMethods table...');
+    await db.exec(`
+      CREATE TABLE IF NOT EXISTS paymentMethods (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT NOT NULL,
+        userId INTEGER NOT NULL,
+        createdAt TEXT NOT NULL,
+        FOREIGN KEY (userId) REFERENCES users(id)
+      );
+    `);
+    console.log('✓ PaymentMethods table created');
+    
+    // 创建记录表
+    console.log('Creating records table...');
+    await db.exec(`
+      CREATE TABLE IF NOT EXISTS records (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        type TEXT NOT NULL,
+        amount REAL NOT NULL,
+        categoryId INTEGER NOT NULL,
+        paymentMethodId INTEGER NULL,
+        date TEXT NOT NULL,
+        remark TEXT NULL,
+        userId INTEGER NOT NULL,
+        createdAt TEXT NOT NULL,
+        FOREIGN KEY (userId) REFERENCES users(id),
+        FOREIGN KEY (categoryId) REFERENCES categories(id),
+        FOREIGN KEY (paymentMethodId) REFERENCES paymentMethods(id)
+      );
+    `);
+    console.log('✓ Records table created');
+    console.log('=== Database initialization completed ===');
+  } catch (error) {
+    console.error('=== Database initialization error ===');
+    console.error('Error:', error);
+    throw error;
+  }
 }
 
 // 用户相关操作
 export async function createUser(username: string, password: string, email: string) {
-  await initDatabase();
-  const db = getDB();
-  
-  // 检查邮箱是否已存在
-  const existingUser = await db.get('SELECT * FROM users WHERE email = ?', [email]);
-  if (existingUser) {
-    throw new Error('邮箱已被注册');
+  try {
+    console.log('=== Creating user ===');
+    console.log('Username:', username);
+    console.log('Email:', email);
+    
+    await initDatabase();
+    const db = getDB();
+    
+    // 检查邮箱是否已存在
+    console.log('Checking if email exists...');
+    const existingUser = await db.get('SELECT * FROM users WHERE email = ?', [email]);
+    if (existingUser) {
+      console.log('Email already exists:', email);
+      throw new Error('邮箱已被注册');
+    }
+    
+    // 生成密码哈希
+    console.log('Generating password hash...');
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const createdAt = new Date().toISOString();
+    
+    // 创建新用户
+    console.log('Inserting user into database...');
+    const result = await db.run(
+      'INSERT INTO users (username, password, email, createdAt) VALUES (?, ?, ?, ?)',
+      [username, hashedPassword, email, createdAt]
+    );
+    console.log('User inserted with ID:', result.lastInsertRowid);
+    
+    const newUser: User = {
+      id: result.lastInsertRowid,
+      username,
+      password: hashedPassword,
+      email,
+      createdAt: new Date(createdAt)
+    };
+    
+    // 为新用户创建默认分类和支付方式
+    console.log('Creating default categories...');
+    await createDefaultCategories(newUser.id);
+    console.log('Creating default payment methods...');
+    await createDefaultPaymentMethods(newUser.id);
+    
+    console.log('=== User created successfully ===');
+    return newUser;
+  } catch (error) {
+    console.error('=== Error creating user ===');
+    console.error('Error:', error);
+    throw error;
   }
-  
-  // 生成密码哈希
-  const hashedPassword = await bcrypt.hash(password, 10);
-  const createdAt = new Date().toISOString();
-  
-  // 创建新用户
-  const result = await db.run(
-    'INSERT INTO users (username, password, email, createdAt) VALUES (?, ?, ?, ?)',
-    [username, hashedPassword, email, createdAt]
-  );
-  
-  const newUser: User = {
-    id: result.lastInsertRowid,
-    username,
-    password: hashedPassword,
-    email,
-    createdAt: new Date(createdAt)
-  };
-  
-  // 为新用户创建默认分类和支付方式
-  await createDefaultCategories(newUser.id);
-  await createDefaultPaymentMethods(newUser.id);
-  
-  return newUser;
 }
 
 export async function getUserByEmail(email: string) {
-  await initDatabase();
-  const db = getDB();
-  
-  const user = await db.get('SELECT * FROM users WHERE email = ?', [email]);
-  if (user) {
-    return {
-      ...user,
-      createdAt: new Date(user.createdAt)
-    };
+  try {
+    console.log('=== Getting user by email ===');
+    console.log('Email:', email);
+    
+    await initDatabase();
+    const db = getDB();
+    
+    const user = await db.get('SELECT * FROM users WHERE email = ?', [email]);
+    if (user) {
+      console.log('User found:', user.id);
+      return {
+        ...user,
+        createdAt: new Date(user.createdAt)
+      };
+    }
+    console.log('User not found');
+    return null;
+  } catch (error) {
+    console.error('=== Error getting user by email ===');
+    console.error('Error:', error);
+    throw error;
   }
-  return null;
 }
 
 export async function getUserById(id: number) {
-  await initDatabase();
-  const db = getDB();
-  
-  const user = await db.get('SELECT * FROM users WHERE id = ?', [id]);
-  if (user) {
-    return {
-      ...user,
-      createdAt: new Date(user.createdAt)
-    };
+  try {
+    console.log('=== Getting user by ID ===');
+    console.log('User ID:', id);
+    
+    await initDatabase();
+    const db = getDB();
+    
+    const user = await db.get('SELECT * FROM users WHERE id = ?', [id]);
+    if (user) {
+      console.log('User found:', user.email);
+      return {
+        ...user,
+        createdAt: new Date(user.createdAt)
+      };
+    }
+    console.log('User not found');
+    return null;
+  } catch (error) {
+    console.error('=== Error getting user by ID ===');
+    console.error('Error:', error);
+    throw error;
   }
-  return null;
 }
 
 // 分类相关操作

@@ -62,9 +62,17 @@ export const POST: APIRoute = async ({ request, cookies }) => {
       { status: 200, headers: { 'Content-Type': 'application/json' } }
     );
   } catch (error) {
-    console.error('登录错误:', error);
+    console.error('=== 登录错误 ===');
+    console.error('Error:', error);
+    console.error('Error type:', typeof error);
+    console.error('Error message:', error instanceof Error ? error.message : error);
+    console.error('Error stack:', error instanceof Error ? error.stack : undefined);
+    
     return new Response(
-      JSON.stringify({ error: '服务器内部错误' }),
+      JSON.stringify({ 
+        error: '服务器内部错误',
+        details: error instanceof Error ? error.message : '未知错误'
+      }),
       { status: 500, headers: { 'Content-Type': 'application/json' } }
     );
   }
