@@ -1,4 +1,4 @@
-import { d as deleteCategory, a as getCategoriesByUserId, b as createCategory, e as updateCategory } from '../../chunks/database_O1mahp95.mjs';
+import { d as deleteCategory, a as getCategoriesByUserId, b as createCategory, e as updateCategory } from '../../chunks/database_BdggdEyo.mjs';
 export { renderers } from '../../renderers.mjs';
 
 const GET = async ({ cookies }) => {

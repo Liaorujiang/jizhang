@@ -344,3 +344,90 @@ export async function updateUser(id: number, username?: string, password?: strin
   await db.write();
   return user;
 }
+
+// 导入数据
+export async function importData(userId: number, data: { categories?: any[], paymentMethods?: any[], records?: any[] }) {
+  await initDatabase();
+  
+  // 先清空用户现有的数据
+  db.data!.categories = db.data!.categories.filter(c => c.userId !== userId);
+  db.data!.paymentMethods = db.data!.paymentMethods.filter(p => p.userId !== userId);
+  db.data!.records = db.data!.records.filter(r => r.userId !== userId);
+  
+  // 创建ID映射
+  const categoryIdMap: Record<number, number> = {};
+  const paymentMethodIdMap: Record<number, number> = {};
+  
+  // 导入分类
+  if (data.categories && Array.isArray(data.categories)) {
+    // 计算初始ID
+    let currentCategoryId = db.data!.categories.length + 1;
+    
+    // 第一次遍历：创建分类并建立ID映射
+    const importedCategories = data.categories.map(category => {
+      const newId = currentCategoryId++;
+      categoryIdMap[category.id] = newId;
+      return {
+        id: newId,
+        name: category.name,
+        type: category.type,
+        parentId: category.parentId,
+        userId,
+        createdAt: new Date()
+      };
+    });
+    
+    // 第二次遍历：更新parentId
+    for (const category of importedCategories) {
+      if (category.parentId !== null) {
+        category.parentId = categoryIdMap[category.parentId] || null;
+      }
+    }
+    
+    db.data!.categories.push(...importedCategories);
+  }
+  
+  // 导入支付方式
+  if (data.paymentMethods && Array.isArray(data.paymentMethods)) {
+    // 计算初始ID
+    let currentPaymentMethodId = db.data!.paymentMethods.length + 1;
+    
+    // 为每个支付方式分配新的ID，并设置当前用户ID
+    const importedPaymentMethods = data.paymentMethods.map(method => {
+      const newId = currentPaymentMethodId++;
+      paymentMethodIdMap[method.id] = newId;
+      return {
+        id: newId,
+        name: method.name,
+        userId,
+        createdAt: new Date()
+      };
+    });
+    
+    db.data!.paymentMethods.push(...importedPaymentMethods);
+  }
+  
+  // 导入记录
+  if (data.records && Array.isArray(data.records)) {
+    // 计算初始ID
+    let currentRecordId = db.data!.records.length + 1;
+    
+    // 为每个记录分配新的ID，并设置当前用户ID
+    const importedRecords = data.records.map(record => ({
+      id: currentRecordId++,
+      type: record.type,
+      amount: record.amount,
+      categoryId: categoryIdMap[record.categoryId] || record.categoryId,
+      paymentMethodId: record.paymentMethodId ? (paymentMethodIdMap[record.paymentMethodId] || record.paymentMethodId) : null,
+      date: new Date(record.date),
+      remark: record.remark,
+      userId,
+      createdAt: new Date()
+    }));
+    
+    db.data!.records.push(...importedRecords);
+  }
+  
+  await db.write();
+  return true;
+}
