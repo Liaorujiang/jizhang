@@ -47,6 +47,7 @@ interface Database {
 // 内存存储适配器
 class MemoryAdapter {
   private data: Database;
+  private isLoaded: boolean = false;
   
   constructor(initialData: Database) {
     this.data = initialData;
@@ -84,22 +85,25 @@ const db = new Low(adapter, defaultData);
 
 // 初始化默认数据
 async function initDatabase() {
-  // 尝试从缓存加载数据
-  if (typeof caches !== 'undefined') {
-    try {
-      const cache = await caches.open('jizhang-db');
-      const response = await cache.match('/db.json');
-      if (response) {
-        const cachedData = await response.json();
-        db.data = cachedData;
-        return;
+  // 只在首次加载时尝试从缓存加载数据
+  if (!adapter['isLoaded']) {
+    // 尝试从缓存加载数据
+    if (typeof caches !== 'undefined') {
+      try {
+        const cache = await caches.open('jizhang-db');
+        const response = await cache.match('/db.json');
+        if (response) {
+          const cachedData = await response.json();
+          db.data = cachedData;
+        }
+      } catch (error) {
+        console.warn('加载缓存失败，使用默认数据');
       }
-    } catch (error) {
-      console.warn('加载缓存失败，使用默认数据');
     }
+    adapter['isLoaded'] = true;
   }
   
-  // 如果缓存不可用或加载失败，使用默认数据
+  // 确保数据存在
   if (!db.data) {
     db.data = {
       users: [],
