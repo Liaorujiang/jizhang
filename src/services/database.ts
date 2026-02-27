@@ -39,8 +39,21 @@ interface Record {
 
 // 获取D1数据库实例
 function getDB() {
+  // 尝试多种可能的绑定名称
   if (typeof DB !== 'undefined') {
     return DB;
+  }
+  if (typeof d1 !== 'undefined') {
+    return d1;
+  }
+  if (typeof database !== 'undefined') {
+    return database;
+  }
+  if (typeof env !== 'undefined' && env.DB) {
+    return env.DB;
+  }
+  if (typeof process !== 'undefined' && process.env.DB) {
+    return process.env.DB;
   }
   throw new Error('D1 database not available. Please check your Cloudflare Pages database bindings.');
 }
