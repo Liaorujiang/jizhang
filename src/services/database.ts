@@ -1,7 +1,6 @@
-import { Low } from 'lowdb';
-import { JSONFile } from 'lowdb/node';
 import bcrypt from 'bcryptjs';
 
+// 类型定义
 interface User {
   id: number;
   username: string;
@@ -38,136 +37,100 @@ interface Record {
   createdAt: Date;
 }
 
-interface Database {
-  users: User[];
-  categories: Category[];
-  paymentMethods: PaymentMethod[];
-  records: Record[];
-}
-
-// 初始化数据库
-const defaultData: Database = {
-  users: [],
-  categories: [],
-  paymentMethods: [],
-  records: []
-};
-
-// 根据环境选择合适的适配器
-let adapter;
-if (typeof process !== 'undefined' && process.env.NODE_ENV === 'development') {
-  // 开发环境：使用文件系统存储
-  adapter = new JSONFile<Database>('db.json');
-} else {
-  // 生产环境：使用内存存储 + 缓存
-  class MemoryAdapter {
-    private data: Database;
-    private cacheKey: string = 'jizhang-db-data';
-    
-    constructor(initialData: Database) {
-      this.data = initialData;
-    }
-    
-    async read(): Promise<Database> {
-      // 尝试从 localStorage 加载数据（客户端）
-      if (typeof localStorage !== 'undefined') {
-        try {
-          const storedData = localStorage.getItem(this.cacheKey);
-          if (storedData) {
-            this.data = JSON.parse(storedData);
-          }
-        } catch (error) {
-          console.warn('从 localStorage 加载数据失败');
-        }
-      }
-      // 尝试从缓存加载数据（Cloudflare Workers）
-      else if (typeof caches !== 'undefined') {
-        try {
-          const cache = await caches.open('jizhang-db');
-          const response = await cache.match('/db.json');
-          if (response) {
-            const cachedData = await response.json();
-            this.data = cachedData;
-          }
-        } catch (error) {
-          console.warn('从缓存加载数据失败');
-        }
-      }
-      return this.data;
-    }
-    
-    async write(data: Database): Promise<void> {
-      this.data = data;
-      // 尝试保存到 localStorage（客户端）
-      if (typeof localStorage !== 'undefined') {
-        try {
-          localStorage.setItem(this.cacheKey, JSON.stringify(data));
-        } catch (error) {
-          console.warn('保存到 localStorage 失败');
-        }
-      }
-      // 尝试保存到缓存（Cloudflare Workers）
-      else if (typeof caches !== 'undefined') {
-        try {
-          const cache = await caches.open('jizhang-db');
-          await cache.put(new Request('/db.json'), new Response(JSON.stringify(data), {
-            headers: {
-              'Content-Type': 'application/json',
-              'Cache-Control': 'max-age=86400' // 24小时
-            }
-          }));
-        } catch (error) {
-          console.warn('保存到缓存失败');
-        }
-      }
-    }
+// 获取D1数据库实例
+function getDB() {
+  if (typeof DB !== 'undefined') {
+    return DB;
   }
-  adapter = new MemoryAdapter(defaultData);
+  throw new Error('D1 database not available');
 }
 
-// 创建数据库实例
-const db = new Low(adapter, defaultData);
-
-// 初始化默认数据
+// 初始化数据库表结构
 async function initDatabase() {
-  // 从适配器读取数据
-  await db.read();
+  const db = getDB();
   
-  // 确保数据存在
-  if (!db.data) {
-    db.data = {
-      users: [],
-      categories: [],
-      paymentMethods: [],
-      records: []
-    };
-  }
+  // 创建用户表
+  await db.exec(`
+    CREATE TABLE IF NOT EXISTS users (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      username TEXT NOT NULL,
+      password TEXT NOT NULL,
+      email TEXT UNIQUE NOT NULL,
+      createdAt TEXT NOT NULL
+    );
+  `);
+  
+  // 创建分类表
+  await db.exec(`
+    CREATE TABLE IF NOT EXISTS categories (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      name TEXT NOT NULL,
+      type TEXT NOT NULL,
+      parentId INTEGER NULL,
+      userId INTEGER NOT NULL,
+      createdAt TEXT NOT NULL,
+      FOREIGN KEY (userId) REFERENCES users(id)
+    );
+  `);
+  
+  // 创建支付方式表
+  await db.exec(`
+    CREATE TABLE IF NOT EXISTS paymentMethods (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      name TEXT NOT NULL,
+      userId INTEGER NOT NULL,
+      createdAt TEXT NOT NULL,
+      FOREIGN KEY (userId) REFERENCES users(id)
+    );
+  `);
+  
+  // 创建记录表
+  await db.exec(`
+    CREATE TABLE IF NOT EXISTS records (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      type TEXT NOT NULL,
+      amount REAL NOT NULL,
+      categoryId INTEGER NOT NULL,
+      paymentMethodId INTEGER NULL,
+      date TEXT NOT NULL,
+      remark TEXT NULL,
+      userId INTEGER NOT NULL,
+      createdAt TEXT NOT NULL,
+      FOREIGN KEY (userId) REFERENCES users(id),
+      FOREIGN KEY (categoryId) REFERENCES categories(id),
+      FOREIGN KEY (paymentMethodId) REFERENCES paymentMethods(id)
+    );
+  `);
 }
 
 // 用户相关操作
 export async function createUser(username: string, password: string, email: string) {
   await initDatabase();
+  const db = getDB();
   
   // 检查邮箱是否已存在
-  const existingUser = db.data!.users.find(user => user.email === email);
+  const existingUser = await db.get('SELECT * FROM users WHERE email = ?', [email]);
   if (existingUser) {
     throw new Error('邮箱已被注册');
   }
   
   // 生成密码哈希
   const hashedPassword = await bcrypt.hash(password, 10);
+  const createdAt = new Date().toISOString();
   
   // 创建新用户
+  const result = await db.run(
+    'INSERT INTO users (username, password, email, createdAt) VALUES (?, ?, ?, ?)',
+    [username, hashedPassword, email, createdAt]
+  );
+  
   const newUser: User = {
-    id: db.data!.users.length + 1,
+    id: result.lastInsertRowid,
     username,
     password: hashedPassword,
     email,
-    createdAt: new Date()
+    createdAt: new Date(createdAt)
   };
-  
-  db.data!.users.push(newUser);
-  await db.write();
   
   // 为新用户创建默认分类和支付方式
   await createDefaultCategories(newUser.id);
@@ -178,174 +141,277 @@ export async function createUser(username: string, password: string, email: stri
 
 export async function getUserByEmail(email: string) {
   await initDatabase();
-  return db.data!.users.find(user => user.email === email);
+  const db = getDB();
+  
+  const user = await db.get('SELECT * FROM users WHERE email = ?', [email]);
+  if (user) {
+    return {
+      ...user,
+      createdAt: new Date(user.createdAt)
+    };
+  }
+  return null;
 }
 
 export async function getUserById(id: number) {
   await initDatabase();
-  return db.data!.users.find(user => user.id === id);
+  const db = getDB();
+  
+  const user = await db.get('SELECT * FROM users WHERE id = ?', [id]);
+  if (user) {
+    return {
+      ...user,
+      createdAt: new Date(user.createdAt)
+    };
+  }
+  return null;
 }
 
 // 分类相关操作
 export async function createDefaultCategories(userId: number) {
   await initDatabase();
+  const db = getDB();
   
-  const defaultCategories: Category[] = [
+  const createdAt = new Date().toISOString();
+  const defaultCategories = [
     // 收入分类
-    { id: db.data!.categories.length + 1, name: '工资', type: 'income', parentId: null, userId, createdAt: new Date() },
-    { id: db.data!.categories.length + 2, name: '奖金', type: 'income', parentId: null, userId, createdAt: new Date() },
-    { id: db.data!.categories.length + 3, name: '投资收益', type: 'income', parentId: null, userId, createdAt: new Date() },
-    { id: db.data!.categories.length + 4, name: '其他收入', type: 'income', parentId: null, userId, createdAt: new Date() },
+    { name: '工资', type: 'income', parentId: null },
+    { name: '奖金', type: 'income', parentId: null },
+    { name: '投资收益', type: 'income', parentId: null },
+    { name: '其他收入', type: 'income', parentId: null },
     
     // 支出分类
-    { id: db.data!.categories.length + 5, name: '餐饮', type: 'expense', parentId: null, userId, createdAt: new Date() },
-    { id: db.data!.categories.length + 6, name: '午餐', type: 'expense', parentId: db.data!.categories.length + 5, userId, createdAt: new Date() },
-    { id: db.data!.categories.length + 7, name: '晚餐', type: 'expense', parentId: db.data!.categories.length + 5, userId, createdAt: new Date() },
-    { id: db.data!.categories.length + 8, name: '外卖', type: 'expense', parentId: db.data!.categories.length + 5, userId, createdAt: new Date() },
-    { id: db.data!.categories.length + 9, name: '交通', type: 'expense', parentId: null, userId, createdAt: new Date() },
-    { id: db.data!.categories.length + 10, name: '公交', type: 'expense', parentId: db.data!.categories.length + 9, userId, createdAt: new Date() },
-    { id: db.data!.categories.length + 11, name: '地铁', type: 'expense', parentId: db.data!.categories.length + 9, userId, createdAt: new Date() },
-    { id: db.data!.categories.length + 12, name: '打车', type: 'expense', parentId: db.data!.categories.length + 9, userId, createdAt: new Date() },
-    { id: db.data!.categories.length + 13, name: '购物', type: 'expense', parentId: null, userId, createdAt: new Date() },
-    { id: db.data!.categories.length + 14, name: '服装', type: 'expense', parentId: db.data!.categories.length + 13, userId, createdAt: new Date() },
-    { id: db.data!.categories.length + 15, name: '日用品', type: 'expense', parentId: db.data!.categories.length + 13, userId, createdAt: new Date() },
-    { id: db.data!.categories.length + 16, name: '娱乐', type: 'expense', parentId: null, userId, createdAt: new Date() },
-    { id: db.data!.categories.length + 17, name: '电影', type: 'expense', parentId: db.data!.categories.length + 16, userId, createdAt: new Date() },
-    { id: db.data!.categories.length + 18, name: '游戏', type: 'expense', parentId: db.data!.categories.length + 16, userId, createdAt: new Date() },
-    { id: db.data!.categories.length + 19, name: '其他支出', type: 'expense', parentId: null, userId, createdAt: new Date() },
+    { name: '餐饮', type: 'expense', parentId: null },
+    { name: '午餐', type: 'expense', parentId: null }, // 稍后更新
+    { name: '晚餐', type: 'expense', parentId: null }, // 稍后更新
+    { name: '外卖', type: 'expense', parentId: null }, // 稍后更新
+    { name: '交通', type: 'expense', parentId: null },
+    { name: '公交', type: 'expense', parentId: null }, // 稍后更新
+    { name: '地铁', type: 'expense', parentId: null }, // 稍后更新
+    { name: '打车', type: 'expense', parentId: null }, // 稍后更新
+    { name: '购物', type: 'expense', parentId: null },
+    { name: '服装', type: 'expense', parentId: null }, // 稍后更新
+    { name: '日用品', type: 'expense', parentId: null }, // 稍后更新
+    { name: '娱乐', type: 'expense', parentId: null },
+    { name: '电影', type: 'expense', parentId: null }, // 稍后更新
+    { name: '游戏', type: 'expense', parentId: null }, // 稍后更新
+    { name: '其他支出', type: 'expense', parentId: null },
     
     // 转账分类
-    { id: db.data!.categories.length + 20, name: '银行卡转账', type: 'transfer', parentId: null, userId, createdAt: new Date() },
-    { id: db.data!.categories.length + 21, name: '支付宝转账', type: 'transfer', parentId: null, userId, createdAt: new Date() },
-    { id: db.data!.categories.length + 22, name: '微信转账', type: 'transfer', parentId: null, userId, createdAt: new Date() }
+    { name: '银行卡转账', type: 'transfer', parentId: null },
+    { name: '支付宝转账', type: 'transfer', parentId: null },
+    { name: '微信转账', type: 'transfer', parentId: null }
   ];
   
-  db.data!.categories.push(...defaultCategories);
-  await db.write();
+  // 存储分类ID映射
+  const categoryIds: number[] = [];
+  
+  // 首先插入所有分类
+  for (const category of defaultCategories) {
+    const result = await db.run(
+      'INSERT INTO categories (name, type, parentId, userId, createdAt) VALUES (?, ?, ?, ?, ?)',
+      [category.name, category.type, category.parentId, userId, createdAt]
+    );
+    categoryIds.push(result.lastInsertRowid);
+  }
+  
+  // 更新子分类的parentId
+  const updates = [
+    { id: categoryIds[5], parentId: categoryIds[4] }, // 午餐 -> 餐饮
+    { id: categoryIds[6], parentId: categoryIds[4] }, // 晚餐 -> 餐饮
+    { id: categoryIds[7], parentId: categoryIds[4] }, // 外卖 -> 餐饮
+    { id: categoryIds[9], parentId: categoryIds[8] }, // 公交 -> 交通
+    { id: categoryIds[10], parentId: categoryIds[8] }, // 地铁 -> 交通
+    { id: categoryIds[11], parentId: categoryIds[8] }, // 打车 -> 交通
+    { id: categoryIds[13], parentId: categoryIds[12] }, // 服装 -> 购物
+    { id: categoryIds[14], parentId: categoryIds[12] }, // 日用品 -> 购物
+    { id: categoryIds[16], parentId: categoryIds[15] }, // 电影 -> 娱乐
+    { id: categoryIds[17], parentId: categoryIds[15] } // 游戏 -> 娱乐
+  ];
+  
+  for (const update of updates) {
+    await db.run(
+      'UPDATE categories SET parentId = ? WHERE id = ? AND userId = ?',
+      [update.parentId, update.id, userId]
+    );
+  }
 }
 
 export async function getCategoriesByUserId(userId: number) {
   await initDatabase();
-  return db.data!.categories.filter(category => category.userId === userId);
+  const db = getDB();
+  
+  const categories = await db.all('SELECT * FROM categories WHERE userId = ?', [userId]);
+  return categories.map(cat => ({
+    ...cat,
+    createdAt: new Date(cat.createdAt)
+  }));
 }
 
 export async function createCategory(name: string, type: string, parentId: number | null, userId: number) {
   await initDatabase();
+  const db = getDB();
   
-  const newCategory: Category = {
-    id: db.data!.categories.length + 1,
+  const createdAt = new Date().toISOString();
+  const result = await db.run(
+    'INSERT INTO categories (name, type, parentId, userId, createdAt) VALUES (?, ?, ?, ?, ?)',
+    [name, type, parentId, userId, createdAt]
+  );
+  
+  return {
+    id: result.lastInsertRowid,
     name,
     type,
     parentId,
     userId,
-    createdAt: new Date()
+    createdAt: new Date(createdAt)
   };
-  
-  db.data!.categories.push(newCategory);
-  await db.write();
-  return newCategory;
 }
 
 export async function updateCategory(id: number, name: string, parentId: number | null, userId: number) {
   await initDatabase();
+  const db = getDB();
   
-  const category = db.data!.categories.find(c => c.id === id && c.userId === userId);
+  const category = await db.get('SELECT * FROM categories WHERE id = ? AND userId = ?', [id, userId]);
   if (!category) {
     throw new Error('分类不存在');
   }
   
-  category.name = name;
-  category.parentId = parentId;
-  await db.write();
-  return category;
+  await db.run(
+    'UPDATE categories SET name = ?, parentId = ? WHERE id = ? AND userId = ?',
+    [name, parentId, id, userId]
+  );
+  
+  return {
+    ...category,
+    name,
+    parentId,
+    createdAt: new Date(category.createdAt)
+  };
 }
 
 export async function deleteCategory(id: number, userId: number) {
   await initDatabase();
+  const db = getDB();
   
-  const index = db.data!.categories.findIndex(c => c.id === id && c.userId === userId);
-  if (index === -1) {
+  const category = await db.get('SELECT * FROM categories WHERE id = ? AND userId = ?', [id, userId]);
+  if (!category) {
     throw new Error('分类不存在');
   }
   
-  db.data!.categories.splice(index, 1);
-  await db.write();
+  await db.run('DELETE FROM categories WHERE id = ? AND userId = ?', [id, userId]);
   return true;
 }
 
 // 支付方式相关操作
 export async function createDefaultPaymentMethods(userId: number) {
   await initDatabase();
+  const db = getDB();
   
-  const defaultPaymentMethods: PaymentMethod[] = [
-    { id: db.data!.paymentMethods.length + 1, name: '现金', userId, createdAt: new Date() },
-    { id: db.data!.paymentMethods.length + 2, name: '信用卡', userId, createdAt: new Date() },
-    { id: db.data!.paymentMethods.length + 3, name: '支付宝', userId, createdAt: new Date() },
-    { id: db.data!.paymentMethods.length + 4, name: '微信', userId, createdAt: new Date() },
-    { id: db.data!.paymentMethods.length + 5, name: '银行卡', userId, createdAt: new Date() }
-  ];
+  const createdAt = new Date().toISOString();
+  const defaultPaymentMethods = ['现金', '信用卡', '支付宝', '微信', '银行卡'];
   
-  db.data!.paymentMethods.push(...defaultPaymentMethods);
-  await db.write();
+  for (const name of defaultPaymentMethods) {
+    await db.run(
+      'INSERT INTO paymentMethods (name, userId, createdAt) VALUES (?, ?, ?)',
+      [name, userId, createdAt]
+    );
+  }
 }
 
 export async function getPaymentMethodsByUserId(userId: number) {
   await initDatabase();
-  return db.data!.paymentMethods.filter(method => method.userId === userId);
+  const db = getDB();
+  
+  const methods = await db.all('SELECT * FROM paymentMethods WHERE userId = ?', [userId]);
+  return methods.map(method => ({
+    ...method,
+    createdAt: new Date(method.createdAt)
+  }));
 }
 
 export async function createPaymentMethod(name: string, userId: number) {
   await initDatabase();
+  const db = getDB();
   
-  const newPaymentMethod: PaymentMethod = {
-    id: db.data!.paymentMethods.length + 1,
+  const createdAt = new Date().toISOString();
+  const result = await db.run(
+    'INSERT INTO paymentMethods (name, userId, createdAt) VALUES (?, ?, ?)',
+    [name, userId, createdAt]
+  );
+  
+  return {
+    id: result.lastInsertRowid,
     name,
     userId,
-    createdAt: new Date()
+    createdAt: new Date(createdAt)
   };
-  
-  db.data!.paymentMethods.push(newPaymentMethod);
-  await db.write();
-  return newPaymentMethod;
 }
 
 export async function updatePaymentMethod(id: number, name: string, userId: number) {
   await initDatabase();
+  const db = getDB();
   
-  const method = db.data!.paymentMethods.find(m => m.id === id && m.userId === userId);
+  const method = await db.get('SELECT * FROM paymentMethods WHERE id = ? AND userId = ?', [id, userId]);
   if (!method) {
     throw new Error('支付方式不存在');
   }
   
-  method.name = name;
-  await db.write();
-  return method;
+  await db.run(
+    'UPDATE paymentMethods SET name = ? WHERE id = ? AND userId = ?',
+    [name, id, userId]
+  );
+  
+  return {
+    ...method,
+    name,
+    createdAt: new Date(method.createdAt)
+  };
 }
 
 export async function deletePaymentMethod(id: number, userId: number) {
   await initDatabase();
+  const db = getDB();
   
-  const index = db.data!.paymentMethods.findIndex(m => m.id === id && m.userId === userId);
-  if (index === -1) {
+  const method = await db.get('SELECT * FROM paymentMethods WHERE id = ? AND userId = ?', [id, userId]);
+  if (!method) {
     throw new Error('支付方式不存在');
   }
   
-  db.data!.paymentMethods.splice(index, 1);
-  await db.write();
+  await db.run('DELETE FROM paymentMethods WHERE id = ? AND userId = ?', [id, userId]);
   return true;
 }
 
 // 记录相关操作
 export async function getRecordsByUserId(userId: number) {
   await initDatabase();
-  return db.data!.records.filter(record => record.userId === userId).sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+  const db = getDB();
+  
+  const records = await db.all(
+    'SELECT * FROM records WHERE userId = ? ORDER BY date DESC',
+    [userId]
+  );
+  return records.map(record => ({
+    ...record,
+    date: new Date(record.date),
+    createdAt: new Date(record.createdAt)
+  }));
 }
 
 export async function createRecord(type: string, amount: number, categoryId: number, paymentMethodId: number | null, date: Date, remark: string | null, userId: number) {
   await initDatabase();
+  const db = getDB();
   
-  const newRecord: Record = {
-    id: db.data!.records.length + 1,
+  const dateStr = date.toISOString();
+  const createdAt = new Date().toISOString();
+  
+  const result = await db.run(
+    'INSERT INTO records (type, amount, categoryId, paymentMethodId, date, remark, userId, createdAt) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+    [type, amount, categoryId, paymentMethodId, dateStr, remark, userId, createdAt]
+  );
+  
+  return {
+    id: result.lastInsertRowid,
     type,
     amount,
     categoryId,
@@ -353,42 +419,48 @@ export async function createRecord(type: string, amount: number, categoryId: num
     date,
     remark,
     userId,
-    createdAt: new Date()
+    createdAt: new Date(createdAt)
   };
-  
-  db.data!.records.push(newRecord);
-  await db.write();
-  return newRecord;
 }
 
 export async function updateRecord(id: number, type: string, amount: number, categoryId: number, paymentMethodId: number | null, date: Date, remark: string | null, userId: number) {
   await initDatabase();
+  const db = getDB();
   
-  const record = db.data!.records.find(r => r.id === id && r.userId === userId);
+  const record = await db.get('SELECT * FROM records WHERE id = ? AND userId = ?', [id, userId]);
   if (!record) {
     throw new Error('记录不存在');
   }
   
-  record.type = type;
-  record.amount = amount;
-  record.categoryId = categoryId;
-  record.paymentMethodId = paymentMethodId;
-  record.date = date;
-  record.remark = remark;
-  await db.write();
-  return record;
+  const dateStr = date.toISOString();
+  
+  await db.run(
+    'UPDATE records SET type = ?, amount = ?, categoryId = ?, paymentMethodId = ?, date = ?, remark = ? WHERE id = ? AND userId = ?',
+    [type, amount, categoryId, paymentMethodId, dateStr, remark, id, userId]
+  );
+  
+  return {
+    ...record,
+    type,
+    amount,
+    categoryId,
+    paymentMethodId,
+    date,
+    remark,
+    createdAt: new Date(record.createdAt)
+  };
 }
 
 export async function deleteRecord(id: number, userId: number) {
   await initDatabase();
+  const db = getDB();
   
-  const index = db.data!.records.findIndex(r => r.id === id && r.userId === userId);
-  if (index === -1) {
+  const record = await db.get('SELECT * FROM records WHERE id = ? AND userId = ?', [id, userId]);
+  if (!record) {
     throw new Error('记录不存在');
   }
   
-  db.data!.records.splice(index, 1);
-  await db.write();
+  await db.run('DELETE FROM records WHERE id = ? AND userId = ?', [id, userId]);
   return true;
 }
 
@@ -400,108 +472,98 @@ export async function verifyPassword(plainPassword: string, hashedPassword: stri
 // 更新用户信息
 export async function updateUser(id: number, username?: string, password?: string) {
   await initDatabase();
+  const db = getDB();
   
-  const user = db.data!.users.find(u => u.id === id);
+  const user = await db.get('SELECT * FROM users WHERE id = ?', [id]);
   if (!user) {
     throw new Error('用户不存在');
   }
   
   if (username) {
+    await db.run('UPDATE users SET username = ? WHERE id = ?', [username, id]);
     user.username = username;
   }
   
   if (password) {
     const hashedPassword = await bcrypt.hash(password, 10);
+    await db.run('UPDATE users SET password = ? WHERE id = ?', [hashedPassword, id]);
     user.password = hashedPassword;
   }
   
-  await db.write();
-  return user;
+  return {
+    ...user,
+    createdAt: new Date(user.createdAt)
+  };
 }
 
 // 导入数据
 export async function importData(userId: number, data: { categories?: any[], paymentMethods?: any[], records?: any[] }) {
   await initDatabase();
+  const db = getDB();
   
   // 先清空用户现有的数据
-  db.data!.categories = db.data!.categories.filter(c => c.userId !== userId);
-  db.data!.paymentMethods = db.data!.paymentMethods.filter(p => p.userId !== userId);
-  db.data!.records = db.data!.records.filter(r => r.userId !== userId);
+  await db.run('DELETE FROM categories WHERE userId = ?', [userId]);
+  await db.run('DELETE FROM paymentMethods WHERE userId = ?', [userId]);
+  await db.run('DELETE FROM records WHERE userId = ?', [userId]);
   
   // 创建ID映射
   const categoryIdMap: Record<number, number> = {};
   const paymentMethodIdMap: Record<number, number> = {};
+  const createdAt = new Date().toISOString();
   
   // 导入分类
   if (data.categories && Array.isArray(data.categories)) {
-    // 计算初始ID
-    let currentCategoryId = db.data!.categories.length + 1;
-    
-    // 第一次遍历：创建分类并建立ID映射
-    const importedCategories = data.categories.map(category => {
-      const newId = currentCategoryId++;
-      categoryIdMap[category.id] = newId;
-      return {
-        id: newId,
-        name: category.name,
-        type: category.type,
-        parentId: category.parentId,
-        userId,
-        createdAt: new Date()
-      };
-    });
-    
-    // 第二次遍历：更新parentId
-    for (const category of importedCategories) {
-      if (category.parentId !== null) {
-        category.parentId = categoryIdMap[category.parentId] || null;
-      }
+    // 首先插入所有分类
+    for (const category of data.categories) {
+      const result = await db.run(
+        'INSERT INTO categories (name, type, parentId, userId, createdAt) VALUES (?, ?, ?, ?, ?)',
+        [category.name, category.type, category.parentId, userId, createdAt]
+      );
+      categoryIdMap[category.id] = result.lastInsertRowid;
     }
     
-    db.data!.categories.push(...importedCategories);
+    // 更新子分类的parentId
+    for (const category of data.categories) {
+      if (category.parentId !== null) {
+        const newParentId = categoryIdMap[category.parentId] || null;
+        await db.run(
+          'UPDATE categories SET parentId = ? WHERE id = ? AND userId = ?',
+          [newParentId, categoryIdMap[category.id], userId]
+        );
+      }
+    }
   }
   
   // 导入支付方式
   if (data.paymentMethods && Array.isArray(data.paymentMethods)) {
-    // 计算初始ID
-    let currentPaymentMethodId = db.data!.paymentMethods.length + 1;
-    
-    // 为每个支付方式分配新的ID，并设置当前用户ID
-    const importedPaymentMethods = data.paymentMethods.map(method => {
-      const newId = currentPaymentMethodId++;
-      paymentMethodIdMap[method.id] = newId;
-      return {
-        id: newId,
-        name: method.name,
-        userId,
-        createdAt: new Date()
-      };
-    });
-    
-    db.data!.paymentMethods.push(...importedPaymentMethods);
+    for (const method of data.paymentMethods) {
+      const result = await db.run(
+        'INSERT INTO paymentMethods (name, userId, createdAt) VALUES (?, ?, ?)',
+        [method.name, userId, createdAt]
+      );
+      paymentMethodIdMap[method.id] = result.lastInsertRowid;
+    }
   }
   
   // 导入记录
   if (data.records && Array.isArray(data.records)) {
-    // 计算初始ID
-    let currentRecordId = db.data!.records.length + 1;
-    
-    // 为每个记录分配新的ID，并设置当前用户ID
-    const importedRecords = data.records.map(record => ({
-      id: currentRecordId++,
-      type: record.type,
-      amount: record.amount,
-      categoryId: categoryIdMap[record.categoryId] || record.categoryId,
-      paymentMethodId: record.paymentMethodId ? (paymentMethodIdMap[record.paymentMethodId] || record.paymentMethodId) : null,
-      date: new Date(record.date),
-      remark: record.remark,
-      userId,
-      createdAt: new Date()
-    }));
-    
-    db.data!.records.push(...importedRecords);
+    for (const record of data.records) {
+      const dateStr = new Date(record.date).toISOString();
+      await db.run(
+        'INSERT INTO records (type, amount, categoryId, paymentMethodId, date, remark, userId, createdAt) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+        [
+          record.type,
+          record.amount,
+          categoryIdMap[record.categoryId] || record.categoryId,
+          record.paymentMethodId ? (paymentMethodIdMap[record.paymentMethodId] || record.paymentMethodId) : null,
+          dateStr,
+          record.remark,
+          userId,
+          createdAt
+        ]
+      );
+    }
   }
   
-  await db.write();
   return true;
 }
