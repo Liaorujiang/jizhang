@@ -1,4 +1,5 @@
 import { Low } from 'lowdb';
+import { JSONFile } from 'lowdb/node';
 import bcrypt from 'bcryptjs';
 
 interface User {
@@ -44,70 +45,6 @@ interface Database {
   records: Record[];
 }
 
-// 内存存储适配器
-class MemoryAdapter {
-  private data: Database;
-  private cacheKey: string = 'jizhang-db-data';
-  
-  constructor(initialData: Database) {
-    this.data = initialData;
-  }
-  
-  async read(): Promise<Database> {
-    // 尝试从 localStorage 加载数据（客户端）
-    if (typeof localStorage !== 'undefined') {
-      try {
-        const storedData = localStorage.getItem(this.cacheKey);
-        if (storedData) {
-          this.data = JSON.parse(storedData);
-        }
-      } catch (error) {
-        console.warn('从 localStorage 加载数据失败');
-      }
-    }
-    // 尝试从缓存加载数据（Cloudflare Workers）
-    else if (typeof caches !== 'undefined') {
-      try {
-        const cache = await caches.open('jizhang-db');
-        const response = await cache.match('/db.json');
-        if (response) {
-          const cachedData = await response.json();
-          this.data = cachedData;
-        }
-      } catch (error) {
-        console.warn('从缓存加载数据失败');
-      }
-    }
-    return this.data;
-  }
-  
-  async write(data: Database): Promise<void> {
-    this.data = data;
-    // 尝试保存到 localStorage（客户端）
-    if (typeof localStorage !== 'undefined') {
-      try {
-        localStorage.setItem(this.cacheKey, JSON.stringify(data));
-      } catch (error) {
-        console.warn('保存到 localStorage 失败');
-      }
-    }
-    // 尝试保存到缓存（Cloudflare Workers）
-    else if (typeof caches !== 'undefined') {
-      try {
-        const cache = await caches.open('jizhang-db');
-        await cache.put(new Request('/db.json'), new Response(JSON.stringify(data), {
-          headers: {
-            'Content-Type': 'application/json',
-            'Cache-Control': 'max-age=86400' // 24小时
-          }
-        }));
-      } catch (error) {
-        console.warn('保存到缓存失败');
-      }
-    }
-  }
-}
-
 // 初始化数据库
 const defaultData: Database = {
   users: [],
@@ -116,8 +53,79 @@ const defaultData: Database = {
   records: []
 };
 
-// 创建内存适配器
-const adapter = new MemoryAdapter(defaultData);
+// 根据环境选择合适的适配器
+let adapter;
+if (typeof process !== 'undefined' && process.env.NODE_ENV === 'development') {
+  // 开发环境：使用文件系统存储
+  adapter = new JSONFile<Database>('db.json');
+} else {
+  // 生产环境：使用内存存储 + 缓存
+  class MemoryAdapter {
+    private data: Database;
+    private cacheKey: string = 'jizhang-db-data';
+    
+    constructor(initialData: Database) {
+      this.data = initialData;
+    }
+    
+    async read(): Promise<Database> {
+      // 尝试从 localStorage 加载数据（客户端）
+      if (typeof localStorage !== 'undefined') {
+        try {
+          const storedData = localStorage.getItem(this.cacheKey);
+          if (storedData) {
+            this.data = JSON.parse(storedData);
+          }
+        } catch (error) {
+          console.warn('从 localStorage 加载数据失败');
+        }
+      }
+      // 尝试从缓存加载数据（Cloudflare Workers）
+      else if (typeof caches !== 'undefined') {
+        try {
+          const cache = await caches.open('jizhang-db');
+          const response = await cache.match('/db.json');
+          if (response) {
+            const cachedData = await response.json();
+            this.data = cachedData;
+          }
+        } catch (error) {
+          console.warn('从缓存加载数据失败');
+        }
+      }
+      return this.data;
+    }
+    
+    async write(data: Database): Promise<void> {
+      this.data = data;
+      // 尝试保存到 localStorage（客户端）
+      if (typeof localStorage !== 'undefined') {
+        try {
+          localStorage.setItem(this.cacheKey, JSON.stringify(data));
+        } catch (error) {
+          console.warn('保存到 localStorage 失败');
+        }
+      }
+      // 尝试保存到缓存（Cloudflare Workers）
+      else if (typeof caches !== 'undefined') {
+        try {
+          const cache = await caches.open('jizhang-db');
+          await cache.put(new Request('/db.json'), new Response(JSON.stringify(data), {
+            headers: {
+              'Content-Type': 'application/json',
+              'Cache-Control': 'max-age=86400' // 24小时
+            }
+          }));
+        } catch (error) {
+          console.warn('保存到缓存失败');
+        }
+      }
+    }
+  }
+  adapter = new MemoryAdapter(defaultData);
+}
+
+// 创建数据库实例
 const db = new Low(adapter, defaultData);
 
 // 初始化默认数据
