@@ -42,7 +42,160 @@ function getDB() {
   if (typeof DB !== 'undefined') {
     return DB;
   }
+  
+  // 开发环境：使用内存数据库模拟
+  if (typeof process !== 'undefined' && process.env.NODE_ENV === 'development') {
+    console.warn('Using in-memory database for development');
+    return createMockDB();
+  }
+  
   throw new Error('D1 database not available');
+}
+
+// 创建模拟数据库（开发环境使用）
+function createMockDB() {
+  let data = {
+    users: [],
+    categories: [],
+    paymentMethods: [],
+    records: []
+  };
+  
+  return {
+    async exec(sql) {
+      console.log('Executing SQL:', sql);
+      // 模拟执行SQL
+    },
+    
+    async get(sql, params) {
+      console.log('Getting data:', sql, params);
+      // 模拟查询单个数据
+      if (sql.includes('SELECT * FROM users WHERE email =')) {
+        return data.users.find(user => user.email === params[0]) || null;
+      }
+      if (sql.includes('SELECT * FROM users WHERE id =')) {
+        return data.users.find(user => user.id === params[0]) || null;
+      }
+      if (sql.includes('SELECT * FROM categories WHERE id =')) {
+        return data.categories.find(cat => cat.id === params[0] && cat.userId === params[1]) || null;
+      }
+      if (sql.includes('SELECT * FROM paymentMethods WHERE id =')) {
+        return data.paymentMethods.find(method => method.id === params[0] && method.userId === params[1]) || null;
+      }
+      if (sql.includes('SELECT * FROM records WHERE id =')) {
+        return data.records.find(record => record.id === params[0] && record.userId === params[1]) || null;
+      }
+      return null;
+    },
+    
+    async all(sql, params) {
+      console.log('Getting all data:', sql, params);
+      // 模拟查询多个数据
+      if (sql.includes('SELECT * FROM categories WHERE userId =')) {
+        return data.categories.filter(cat => cat.userId === params[0]);
+      }
+      if (sql.includes('SELECT * FROM paymentMethods WHERE userId =')) {
+        return data.paymentMethods.filter(method => method.userId === params[0]);
+      }
+      if (sql.includes('SELECT * FROM records WHERE userId =')) {
+        return data.records.filter(record => record.userId === params[0]).sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+      }
+      return [];
+    },
+    
+    async run(sql, params) {
+      console.log('Running SQL:', sql, params);
+      // 模拟执行写操作
+      if (sql.includes('INSERT INTO users')) {
+        const newId = data.users.length + 1;
+        data.users.push({
+          id: newId,
+          username: params[0],
+          password: params[1],
+          email: params[2],
+          createdAt: params[3]
+        });
+        return { lastInsertRowid: newId };
+      }
+      if (sql.includes('INSERT INTO categories')) {
+        const newId = data.categories.length + 1;
+        data.categories.push({
+          id: newId,
+          name: params[0],
+          type: params[1],
+          parentId: params[2],
+          userId: params[3],
+          createdAt: params[4]
+        });
+        return { lastInsertRowid: newId };
+      }
+      if (sql.includes('INSERT INTO paymentMethods')) {
+        const newId = data.paymentMethods.length + 1;
+        data.paymentMethods.push({
+          id: newId,
+          name: params[0],
+          userId: params[1],
+          createdAt: params[2]
+        });
+        return { lastInsertRowid: newId };
+      }
+      if (sql.includes('INSERT INTO records')) {
+        const newId = data.records.length + 1;
+        data.records.push({
+          id: newId,
+          type: params[0],
+          amount: params[1],
+          categoryId: params[2],
+          paymentMethodId: params[3],
+          date: params[4],
+          remark: params[5],
+          userId: params[6],
+          createdAt: params[7]
+        });
+        return { lastInsertRowid: newId };
+      }
+      if (sql.includes('UPDATE users')) {
+        const user = data.users.find(u => u.id === params[params.length - 1]);
+        if (user) {
+          user.username = params[0];
+        }
+      }
+      if (sql.includes('UPDATE categories')) {
+        const category = data.categories.find(c => c.id === params[2] && c.userId === params[3]);
+        if (category) {
+          category.name = params[0];
+          category.parentId = params[1];
+        }
+      }
+      if (sql.includes('UPDATE paymentMethods')) {
+        const method = data.paymentMethods.find(m => m.id === params[1] && m.userId === params[2]);
+        if (method) {
+          method.name = params[0];
+        }
+      }
+      if (sql.includes('UPDATE records')) {
+        const record = data.records.find(r => r.id === params[6] && r.userId === params[7]);
+        if (record) {
+          record.type = params[0];
+          record.amount = params[1];
+          record.categoryId = params[2];
+          record.paymentMethodId = params[3];
+          record.date = params[4];
+          record.remark = params[5];
+        }
+      }
+      if (sql.includes('DELETE FROM categories')) {
+        data.categories = data.categories.filter(c => !(c.id === params[0] && c.userId === params[1]));
+      }
+      if (sql.includes('DELETE FROM paymentMethods')) {
+        data.paymentMethods = data.paymentMethods.filter(m => !(m.id === params[0] && m.userId === params[1]));
+      }
+      if (sql.includes('DELETE FROM records')) {
+        data.records = data.records.filter(r => !(r.id === params[0] && r.userId === params[1]));
+      }
+      return {};
+    }
+  };
 }
 
 // 初始化数据库表结构
