@@ -36,3 +36,6 @@ dist-ssr
 # Database files
 db.json
 db/
+
+# Wrangler files
+.wrangler/

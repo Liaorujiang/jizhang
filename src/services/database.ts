@@ -39,22 +39,41 @@ interface Record {
 
 // 获取D1数据库实例
 function getDB() {
+  console.log('=== D1 Database Binding Check ===');
+  console.log('typeof DB:', typeof DB);
+  console.log('typeof d1:', typeof d1);
+  console.log('typeof database:', typeof database);
+  console.log('typeof env:', typeof env);
+  console.log('typeof process:', typeof process);
+  
   // 尝试多种可能的绑定名称
   if (typeof DB !== 'undefined') {
+    console.log('✓ Found D1 database at DB');
     return DB;
   }
   if (typeof d1 !== 'undefined') {
+    console.log('✓ Found D1 database at d1');
     return d1;
   }
   if (typeof database !== 'undefined') {
+    console.log('✓ Found D1 database at database');
     return database;
   }
   if (typeof env !== 'undefined' && env.DB) {
+    console.log('✓ Found D1 database at env.DB');
     return env.DB;
   }
   if (typeof process !== 'undefined' && process.env.DB) {
+    console.log('✓ Found D1 database at process.env.DB');
     return process.env.DB;
   }
+  
+  // 检查全局对象
+  console.log('=== Global Object Check ===');
+  if (typeof globalThis !== 'undefined') {
+    console.log('Global object keys:', Object.keys(globalThis).filter(key => !key.startsWith('_')));
+  }
+  
   throw new Error('D1 database not available. Please check your Cloudflare Pages database bindings.');
 }
 
