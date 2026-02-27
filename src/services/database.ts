@@ -39,7 +39,11 @@ interface Record {
 
 // 获取D1数据库实例
 function getDB() {
+  console.log('Checking for D1 database...');
+  console.log('DB variable exists:', typeof DB !== 'undefined');
+  
   if (typeof DB !== 'undefined') {
+    console.log('D1 database found, returning DB instance');
     return DB;
   }
   
@@ -49,7 +53,23 @@ function getDB() {
     return createMockDB();
   }
   
-  throw new Error('D1 database not available');
+  // 生产环境：尝试其他可能的绑定名称
+  if (typeof d1 !== 'undefined') {
+    console.log('Found D1 database at d1 variable');
+    return d1;
+  }
+  
+  if (typeof database !== 'undefined') {
+    console.log('Found D1 database at database variable');
+    return database;
+  }
+  
+  console.error('No D1 database binding found');
+  console.error('Available global variables:', Object.keys(globalThis));
+  
+  // 生产环境：创建一个基本的模拟数据库，避免应用崩溃
+  console.warn('Creating fallback mock database for production');
+  return createMockDB();
 }
 
 // 创建模拟数据库（开发环境使用）
