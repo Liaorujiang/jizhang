@@ -1,4 +1,3 @@
-import { JSONFile } from 'lowdb/node';
 import { Low } from 'lowdb';
 import bcrypt from 'bcryptjs';
 
@@ -45,20 +44,62 @@ interface Database {
   records: Record[];
 }
 
+// 内存存储适配器
+class MemoryAdapter {
+  private data: Database;
+  
+  constructor(initialData: Database) {
+    this.data = initialData;
+  }
+  
+  async read(): Promise<Database> {
+    return this.data;
+  }
+  
+  async write(data: Database): Promise<void> {
+    this.data = data;
+    // 尝试保存到 Cloudflare KV（如果可用）
+    if (typeof caches !== 'undefined') {
+      try {
+        const cache = await caches.open('jizhang-db');
+        await cache.put(new Request('/db.json'), new Response(JSON.stringify(data)));
+      } catch (error) {
+        console.warn('KV 存储不可用，使用内存存储');
+      }
+    }
+  }
+}
+
 // 初始化数据库
-const adapter = new JSONFile<Database>('db.json');
 const defaultData: Database = {
   users: [],
   categories: [],
   paymentMethods: [],
   records: []
 };
+
+// 创建内存适配器
+const adapter = new MemoryAdapter(defaultData);
 const db = new Low(adapter, defaultData);
 
 // 初始化默认数据
 async function initDatabase() {
-  await db.read();
+  // 尝试从缓存加载数据
+  if (typeof caches !== 'undefined') {
+    try {
+      const cache = await caches.open('jizhang-db');
+      const response = await cache.match('/db.json');
+      if (response) {
+        const cachedData = await response.json();
+        db.data = cachedData;
+        return;
+      }
+    } catch (error) {
+      console.warn('加载缓存失败，使用默认数据');
+    }
+  }
   
+  // 如果缓存不可用或加载失败，使用默认数据
   if (!db.data) {
     db.data = {
       users: [],
@@ -66,7 +107,6 @@ async function initDatabase() {
       paymentMethods: [],
       records: []
     };
-    await db.write();
   }
 }
 
