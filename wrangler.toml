@@ -1,0 +1,8 @@
+name = "web-jizhang-system"
+main = "dist/server/entry.mjs"
+compatibility_date = "2023-10-01"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "jizhangdata"
+database_id = "c9554ace-2302-4205-9423-d788c9215309"
