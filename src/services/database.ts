@@ -41,6 +41,7 @@ interface Record {
 function getDB() {
   console.log('=== D1 Database Binding Check ===');
   console.log('typeof DB:', typeof DB);
+  console.log('typeof D1_DATABASE:', typeof D1_DATABASE);
   console.log('typeof d1:', typeof d1);
   console.log('typeof database:', typeof database);
   console.log('typeof env:', typeof env);
@@ -50,6 +51,10 @@ function getDB() {
   if (typeof DB !== 'undefined') {
     console.log('✓ Found D1 database at DB');
     return DB;
+  }
+  if (typeof D1_DATABASE !== 'undefined') {
+    console.log('✓ Found D1 database at D1_DATABASE');
+    return D1_DATABASE;
   }
   if (typeof d1 !== 'undefined') {
     console.log('✓ Found D1 database at d1');
